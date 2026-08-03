@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="XRayForge 是面向科研与工程验证的 X 射线正投影和 CT 前向仿真平台。" />
+    <meta name="theme-color" content="#050506" />
+    <meta property="og:title" content="XRayForge | Physics in every projection" />
+    <meta property="og:description" content="从材料衰减数据到探测器响应，让每一步成像物理清晰、可控、可验证。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/xrayforge-ui-desktop.png" />
+    <title>XRayForge | X 射线正投影与 CT 仿真</title>
+    <link rel="stylesheet" href="assets/styles.css" />
+    <script defer src="assets/app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+    <header class="site-header">
+      <a class="wordmark" href="#top" aria-label="XRayForge 首页">XRAYFORGE</a>
+      <nav class="nav-links" aria-label="主要导航"><a href="#physics">物理模型</a><a href="#workflow">工作流</a><a href="#interface">操作界面</a></nav>
+      <a class="nav-action" href="#access">了解更多</a>
+    </header>
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-media" aria-hidden="true"></div><div class="hero-shade" aria-hidden="true"></div>
+        <div class="hero-copy"><p class="kicker">Physics-based · Python · Research platform</p><h1 id="hero-title">XRayForge</h1><p class="hero-line">每一次投影，都有物理依据。</p><p class="hero-description">透明、可扩展的 X 射线正投影与 CT 前向仿真平台。</p></div>
+        <div class="hero-actions"><a class="action action-primary" href="#physics">探索能力</a><a class="action action-glass" href="#interface">查看界面</a></div>
+        <a class="scroll-cue" href="#physics" aria-label="继续浏览"><span></span></a>
+      </section>
+      <section class="section statement" id="physics" aria-labelledby="physics-title">
+        <div class="section-copy"><p class="kicker">Physics first</p><h2 id="physics-title">不是黑箱。<br />每一步都可以解释。</h2><p class="lead">从质量衰减系数、能谱和几何路径，到探测器响应与噪声，XRayForge 保留完整计算链路，适合科研验证、课程教学和定制开发。</p></div>
+        <div class="equation" aria-label="多能谱投影公式"><span>I = Σ<sub>E</sub> R(E) I₀(E)</span><span>exp[−Σ<sub>m</sub> μ<sub>m</sub>(E)L<sub>m</sub>]</span></div>
+        <div class="metrics" aria-label="核心特点"><div><strong>NumPy</strong><span>清晰的计算核心</span></div><div><strong>CPU / GPU</strong><span>可扩展计算后端</span></div><div><strong>Traceable</strong><span>可追溯物理链路</span></div></div>
+      </section>
+      <section class="section workflow" id="workflow" aria-labelledby="workflow-title">
+        <div class="workflow-visual" aria-hidden="true"></div><div class="workflow-heading"><p class="kicker">One continuous pipeline</p><h2 id="workflow-title">从材料数据，<br />到最终图像。</h2></div>
+        <ol class="pipeline"><li><span>01</span><strong>NIST XCOM</strong><small>材料衰减数据</small></li><li><span>02</span><strong>Spectrum</strong><small>单能 / 多能谱</small></li><li><span>03</span><strong>Geometry</strong><small>Voxel / STL</small></li><li><span>04</span><strong>Projection</strong><small>Parallel / Cone Beam</small></li><li><span>05</span><strong>Detector</strong><small>Response / Noise</small></li></ol>
+      </section>
+      <section class="section results" aria-labelledby="results-title">
+        <div class="results-heading"><p class="kicker">Controlled results</p><h2 id="results-title">生成你需要的投影。</h2><p class="lead">支持单材料、多材料 radiograph 与多角度 CT forward projection stack，并输出 CSV、PGM 或 TIFF。</p></div>
+        <div class="result-visuals"><figure><img src="assets/single-material-projection.png" alt="XRayForge 单材料投影结果" /><figcaption><span>Single material</span><b>Beer–Lambert</b></figcaption></figure><figure><img src="assets/polychromatic-projection.png" alt="XRayForge 多能谱投影结果" /><figcaption><span>Polychromatic</span><b>Beam hardening</b></figcaption></figure></div>
+        <ul class="result-features"><li>Poisson / Gaussian 噪声</li><li>环形伪影模拟</li><li>平场 / 暗场校正</li><li>16-bit 科研图像</li></ul>
+      </section>
+      <section class="interface" id="interface" aria-labelledby="interface-title">
+        <div class="interface-media" aria-hidden="true"></div><div class="interface-shade" aria-hidden="true"></div>
+        <div class="interface-copy"><p class="kicker">Built-in interface</p><h2 id="interface-title">无需先写脚本。<br />浏览器里直接实验。</h2><p>配置材料、能谱、phantom、成像几何和噪声，实时检查视场并生成投影。</p></div>
+        <div class="interface-note"><span class="status-dot"></span><span>Local research workspace</span></div>
+      </section>
+      <section class="section capability-list" aria-labelledby="capability-title">
+        <div class="capability-intro"><p class="kicker">Built to extend</p><h2 id="capability-title">研究级能力，<br />保持清晰。</h2></div>
+        <div class="capabilities"><article><span>01</span><h3>材料与能谱</h3><p>NIST XCOM 数据导入、能量插值、单能与多能谱建模。</p></article><article><span>02</span><h3>成像几何</h3><p>平行束、锥束、SOD/SDD、探测器尺寸与视场计算。</p></article><article><span>03</span><h3>STL 与体素</h3><p>体素 phantom、STL 体素化、多材料路径长度与 mesh 接口。</p></article><article><span>04</span><h3>计算后端</h3><p>先用 CPU 验证完整流程，再按研究规模接入 GPU 加速。</p></article></div>
+      </section>
+      <section class="access" id="access" aria-labelledby="access-title">
+        <div><p class="kicker">Private research software</p><h2 id="access-title">为成像研究，<br />打造可信的基础。</h2><p>XRayForge 目前采用私有分发。研究合作、功能演示或使用咨询，请联系开发者。</p></div>
+        <div class="access-actions"><a class="action action-primary" href="https://www.wzwang.top/">访问个人主页</a><a class="action action-outline" href="https://github.com/WilliamWangwz" target="_blank" rel="noreferrer">联系开发者</a></div>
+      </section>
+    </main>
+    <footer class="site-footer"><a class="wordmark" href="#top">XRAYFORGE</a><p>Physics-based X-ray simulation.</p><nav aria-label="页脚导航"><a href="#physics">能力</a><a href="#interface">界面</a><a href="https://www.wzwang.top/">wzwang.top</a></nav><span>© <span data-year></span> XRayForge</span></footer>
+  </body>
+</html>
