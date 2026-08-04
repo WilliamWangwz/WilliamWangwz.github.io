@@ -132,207 +132,155 @@
     ]
   },
   {
-    "objectID": "numerical-experiments.html",
-    "href": "numerical-experiments.html",
-    "title": "Python 数值实验",
+    "objectID": "parallel-beam-geometry.html",
+    "href": "parallel-beam-geometry.html",
+    "title": "平行束扫描几何",
     "section": "",
-    "text": "本节使用 NumPy、Matplotlib 和 scikit-image。代码在构建网站时执行，输出图像会直接嵌入静态网页。",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "第二部分 · 图像重构",
-      "05 Python 数值实验"
-    ]
-  },
-  {
-    "objectID": "numerical-experiments.html#实验环境",
-    "href": "numerical-experiments.html#实验环境",
-    "title": "Python 数值实验",
-    "section": "",
-    "text": "本节使用 NumPy、Matplotlib 和 scikit-image。代码在构建网站时执行，输出图像会直接嵌入静态网页。",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "第二部分 · 图像重构",
-      "05 Python 数值实验"
-    ]
-  },
-  {
-    "objectID": "numerical-experiments.html#生成-phantom-与正弦图",
-    "href": "numerical-experiments.html#生成-phantom-与正弦图",
-    "title": "Python 数值实验",
-    "section": "2 生成 Phantom 与正弦图",
-    "text": "2 生成 Phantom 与正弦图\n\n代码\nimage = resize(shepp_logan_phantom(), (256, 256), anti_aliasing=True)\ntheta = np.linspace(0.0, 180.0, max(image.shape), endpoint=False)\nsinogram = radon(image, theta=theta, circle=True)\n\nfig, axes = plt.subplots(1, 2, figsize=(10, 4))\naxes[0].imshow(image, cmap=\"gray\")\naxes[0].set_title(\"Phantom\")\naxes[0].axis(\"off\")\naxes[1].imshow(\n    sinogram,\n    cmap=\"gray\",\n    aspect=\"auto\",\n    extent=(theta.min(), theta.max(), sinogram.shape[0], 0),\n)\naxes[1].set_title(\"Sinogram\")\naxes[1].set_xlabel(r\"Projection angle $\\theta$ (degree)\")\naxes[1].set_ylabel(r\"Detector coordinate $s$\")\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\n\n图 1: 二维衰减系数分布\n\n\n\n\n\nShepp-Logan Phantom 及其平行束正弦图。\n\n\n\n图 1 展示了二维物体与投影空间之间的映射。椭圆边界在正弦图中表现为相互交叠的周期轨迹。",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "第二部分 · 图像重构",
-      "05 Python 数值实验"
-    ]
-  },
-  {
-    "objectID": "numerical-experiments.html#简单反投影与-fbp",
-    "href": "numerical-experiments.html#简单反投影与-fbp",
-    "title": "Python 数值实验",
-    "section": "3 简单反投影与 FBP",
-    "text": "3 简单反投影与 FBP\n\n\n代码\nbackprojection = iradon(\n    sinogram,\n    theta=theta,\n    filter_name=None,\n    circle=True,\n)\nfbp = iradon(\n    sinogram,\n    theta=theta,\n    filter_name=\"ramp\",\n    circle=True,\n)\n\nfig, axes = plt.subplots(1, 3, figsize=(12, 4))\nfor ax, data, title in zip(\n    axes,\n    [image, backprojection, fbp],\n    [\"Reference\", \"Backprojection\", \"Filtered backprojection\"],\n):\n    ax.imshow(data, cmap=\"gray\")\n    ax.set_title(title)\n    ax.axis(\"off\")\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n图 2: 未滤波反投影与 Ramp 滤波反投影的比较。\n\n\n\n\n\n简单反投影在整个图像中形成低频拖尾；Ramp 滤波补偿频域采样密度后，边界和内部结构被恢复。这与 极坐标雅可比和 FBP 公式 的推导一致。",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "第二部分 · 图像重构",
-      "05 Python 数值实验"
-    ]
-  },
-  {
-    "objectID": "numerical-experiments.html#定量误差",
-    "href": "numerical-experiments.html#定量误差",
-    "title": "Python 数值实验",
-    "section": "4 定量误差",
-    "text": "4 定量误差\n\n\n代码\nmse_backprojection = np.mean((image - backprojection) ** 2)\nmse_fbp = np.mean((image - fbp) ** 2)\n\nprint(f\"Backprojection MSE: {mse_backprojection:.6f}\")\nprint(f\"FBP MSE:            {mse_fbp:.6f}\")\n\n\nBackprojection MSE: 2458.159556\nFBP MSE:            0.000802\n\n\n\n\n\n\n\n\n注记实现说明\n\n\n\n库函数内部包含离散滤波、插值和尺度归一化。后续可以新增“从零实现 FBP”章节，把 FFT 频率轴、零填充、Ramp 核和角度权重逐项展开。",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "第二部分 · 图像重构",
-      "05 Python 数值实验"
-    ]
-  },
-  {
-    "objectID": "filtered-backprojection.html",
-    "href": "filtered-backprojection.html",
-    "title": "滤波反投影",
-    "section": "",
-    "text": "反投影算子把投影值沿原射线路径均匀“涂回”图像：\n\\[\n\\mathcal{B}p(x,y)\n=\\int_0^\\pi\np_\\theta(x\\cos\\theta+y\\sin\\theta)\n\\,\\mathrm{d}\\theta.\n\\tag{1}\\]\n简单反投影能够形成物体轮廓，但结果会出现明显的 \\(1/r\\) 型模糊。原因是低频成分在极坐标频域中被过度累积。",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "第二部分 · 图像重构",
-      "04 滤波反投影"
-    ]
-  },
-  {
-    "objectID": "filtered-backprojection.html#简单反投影",
-    "href": "filtered-backprojection.html#简单反投影",
-    "title": "滤波反投影",
-    "section": "",
-    "text": "反投影算子把投影值沿原射线路径均匀“涂回”图像：\n\\[\n\\mathcal{B}p(x,y)\n=\\int_0^\\pi\np_\\theta(x\\cos\\theta+y\\sin\\theta)\n\\,\\mathrm{d}\\theta.\n\\tag{1}\\]\n简单反投影能够形成物体轮廓，但结果会出现明显的 \\(1/r\\) 型模糊。原因是低频成分在极坐标频域中被过度累积。",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "第二部分 · 图像重构",
-      "04 滤波反投影"
-    ]
-  },
-  {
-    "objectID": "filtered-backprojection.html#一维投影傅里叶变换",
-    "href": "filtered-backprojection.html#一维投影傅里叶变换",
-    "title": "滤波反投影",
-    "section": "2 一维投影傅里叶变换",
-    "text": "2 一维投影傅里叶变换\n定义投影关于 \\(s\\) 的一维傅里叶变换\n\\[\nP_\\theta(\\omega)\n=\\int_{-\\infty}^{\\infty}\np_\\theta(s)e^{-i2\\pi\\omega s}\\,\\mathrm{d}s.\n\\tag{2}\\]\n二维物体的傅里叶变换为\n\\[\nF(u,v)\n=\\int_{\\mathbb{R}^2}\nf(x,y)e^{-i2\\pi(ux+vy)}\\,\\mathrm{d}x\\,\\mathrm{d}y.\n\\tag{3}\\]\n\n定理 1 (傅里叶切片定理) 投影 \\(p_\\theta(s)\\) 的一维傅里叶变换，等于二维物体频谱 \\(F(u,v)\\) 沿角度 \\(\\theta\\)、通过原点的一条径向切片：\n\\[\nP_\\theta(\\omega)\n=F(\\omega\\cos\\theta,\\omega\\sin\\theta).\n\\tag{4}\\]",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "第二部分 · 图像重构",
-      "04 滤波反投影"
-    ]
-  },
-  {
-    "objectID": "filtered-backprojection.html#逆变换与-ramp-滤波",
-    "href": "filtered-backprojection.html#逆变换与-ramp-滤波",
-    "title": "滤波反投影",
-    "section": "3 逆变换与 Ramp 滤波",
-    "text": "3 逆变换与 Ramp 滤波\n将二维逆傅里叶积分转换到极坐标频域，面积元满足\n\\[\n\\mathrm{d}u\\,\\mathrm{d}v\n=|\\omega|\\,\\mathrm{d}\\omega\\,\\mathrm{d}\\theta.\n\\tag{5}\\]\n其中雅可比因子 \\(|\\omega|\\) 正是 Ramp 滤波器。定义滤波投影\n\\[\nq_\\theta(s)\n=\\mathcal{F}^{-1}\n\\left\\{\n|\\omega|P_\\theta(\\omega)\n\\right\\}(s),\n\\tag{6}\\]\n则二维物体可写为\n\\[\nf(x,y)\n=\\int_0^\\pi\nq_\\theta(x\\cos\\theta+y\\sin\\theta)\n\\,\\mathrm{d}\\theta.\n\\tag{7}\\]\n式 7 就是平行束滤波反投影公式。",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "第二部分 · 图像重构",
-      "04 滤波反投影"
-    ]
-  },
-  {
-    "objectID": "filtered-backprojection.html#窗函数滤波器",
-    "href": "filtered-backprojection.html#窗函数滤波器",
-    "title": "滤波反投影",
-    "section": "4 窗函数滤波器",
-    "text": "4 窗函数滤波器\n理想 Ramp 滤波器增强高频，也会放大噪声。实践中常使用\n\\[\nH(\\omega)=|\\omega|W(\\omega),\n\\tag{8}\\]\n其中 \\(W(\\omega)\\) 可以是 Shepp–Logan、Cosine、Hamming 或 Hann 窗。窗口越强，高频噪声越低，但空间分辨率也会下降。",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "第二部分 · 图像重构",
-      "04 滤波反投影"
-    ]
-  },
-  {
-    "objectID": "filtered-backprojection.html#离散算法",
-    "href": "filtered-backprojection.html#离散算法",
-    "title": "滤波反投影",
-    "section": "5 离散算法",
-    "text": "5 离散算法\n对每个角度 \\(\\theta_k\\)：\n\n对离散投影 \\(p_k[m]\\) 做一维 FFT；\n乘以离散 Ramp 或窗化 Ramp；\n做逆 FFT 得到 \\(q_k[m]\\)；\n对每个重构像素计算 \\(s=x\\cos\\theta_k+y\\sin\\theta_k\\)；\n在探测器坐标上插值 \\(q_k(s)\\) 并对所有角度累加。\n\n离散近似通常写为\n\\[\nf[i,j]\n\\approx\n\\Delta\\theta\n\\sum_{k=0}^{N_\\theta-1}\nq_k\\!\\left(x_i\\cos\\theta_k+y_j\\sin\\theta_k\\right).\n\\tag{9}\\]\n下一节通过可运行的 Python 数值实验 比较反投影与 FBP。",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "第二部分 · 图像重构",
-      "04 滤波反投影"
-    ]
-  },
-  {
-    "objectID": "ct-foundations.html",
-    "href": "ct-foundations.html",
-    "title": "成像物理基础",
-    "section": "",
-    "text": "完成本节后，读者应能解释：\n\n为什么 CT 原始强度需要进行负对数变换；\n线性衰减系数 \\(\\mu(\\boldsymbol{x},E)\\) 的物理意义；\n单能模型与多能谱模型之间的差别；\n暗场、平场和散射误差如何进入投影数据。",
+    "text": "令二维物体的衰减系数分布为 \\(f(x,y)\\)。对投影角 \\(\\theta\\)，定义单位法向量与射线方向向量\n\\[\n\\boldsymbol{n}_\\theta=\n\\begin{bmatrix}\\cos\\theta\\\\\\sin\\theta\\end{bmatrix},\n\\qquad\n\\boldsymbol{t}_\\theta=\n\\begin{bmatrix}-\\sin\\theta\\\\\\cos\\theta\\end{bmatrix}.\n\\tag{1}\\]\n其中，\\(s\\) 表示射线到原点的有符号垂直距离，\\(t\\) 表示沿射线方向的位置。任意射线点可写为\n\\[\n\\boldsymbol{x}(s,t;\\theta)\n=s\\boldsymbol{n}_\\theta+t\\boldsymbol{t}_\\theta.\n\\tag{2}\\]\n展开 式 2 得\n\\[\nx=s\\cos\\theta-t\\sin\\theta,\n\\qquad\ny=s\\sin\\theta+t\\cos\\theta.\n\\tag{3}\\]",
     "crumbs": [
       "WEIZHENG WANG",
       "第一部分 · CT 基础",
-      "01 成像物理基础"
+      "02 平行束扫描几何"
     ]
   },
   {
-    "objectID": "ct-foundations.html#学习目标",
-    "href": "ct-foundations.html#学习目标",
-    "title": "成像物理基础",
+    "objectID": "parallel-beam-geometry.html#坐标定义",
+    "href": "parallel-beam-geometry.html#坐标定义",
+    "title": "平行束扫描几何",
     "section": "",
-    "text": "完成本节后，读者应能解释：\n\n为什么 CT 原始强度需要进行负对数变换；\n线性衰减系数 \\(\\mu(\\boldsymbol{x},E)\\) 的物理意义；\n单能模型与多能谱模型之间的差别；\n暗场、平场和散射误差如何进入投影数据。",
+    "text": "令二维物体的衰减系数分布为 \\(f(x,y)\\)。对投影角 \\(\\theta\\)，定义单位法向量与射线方向向量\n\\[\n\\boldsymbol{n}_\\theta=\n\\begin{bmatrix}\\cos\\theta\\\\\\sin\\theta\\end{bmatrix},\n\\qquad\n\\boldsymbol{t}_\\theta=\n\\begin{bmatrix}-\\sin\\theta\\\\\\cos\\theta\\end{bmatrix}.\n\\tag{1}\\]\n其中，\\(s\\) 表示射线到原点的有符号垂直距离，\\(t\\) 表示沿射线方向的位置。任意射线点可写为\n\\[\n\\boldsymbol{x}(s,t;\\theta)\n=s\\boldsymbol{n}_\\theta+t\\boldsymbol{t}_\\theta.\n\\tag{2}\\]\n展开 式 2 得\n\\[\nx=s\\cos\\theta-t\\sin\\theta,\n\\qquad\ny=s\\sin\\theta+t\\cos\\theta.\n\\tag{3}\\]",
     "crumbs": [
       "WEIZHENG WANG",
       "第一部分 · CT 基础",
-      "01 成像物理基础"
+      "02 平行束扫描几何"
     ]
   },
   {
-    "objectID": "ct-foundations.html#单色-x-射线衰减",
-    "href": "ct-foundations.html#单色-x-射线衰减",
-    "title": "成像物理基础",
-    "section": "2 单色 X 射线衰减",
-    "text": "2 单色 X 射线衰减\n\n定义 1 (线性衰减系数) \\(\\mu(\\boldsymbol{x})\\) 表示单位路径长度上的相对强度损失，其量纲通常为 \\(\\mathrm{mm}^{-1}\\) 或 \\(\\mathrm{cm}^{-1}\\)。\n\n对于沿射线 \\(L\\) 传播的单能 X 射线，Beer–Lambert 定律写为\n\\[\nI = I_0\\exp\\left[-\\int_L \\mu(\\boldsymbol{x})\\,\\mathrm{d}\\ell\\right].\n\\tag{1}\\]\n对 式 1 两侧取负对数，得到\n\\[\np_L\n=-\\ln\\frac{I}{I_0}\n=\\int_L \\mu(\\boldsymbol{x})\\,\\mathrm{d}\\ell.\n\\tag{2}\\]\n式 2 是解析 CT 重构的关键：经过负对数变换后，测得的强度比被转化为衰减系数的线积分。\n\n\n\n\n\n\n重要模型条件\n\n\n\n式 2 假设单能谱、无散射、探测器线性且 \\(I_0\\) 已知。真实工业 CT 往往不完全满足这些条件，因此预处理和物理校正与重构算法同等重要。",
+    "objectID": "parallel-beam-geometry.html#射线的隐式方程",
+    "href": "parallel-beam-geometry.html#射线的隐式方程",
+    "title": "平行束扫描几何",
+    "section": "2 射线的隐式方程",
+    "text": "2 射线的隐式方程\n由于 \\(\\boldsymbol{x}\\cdot\\boldsymbol{n}_\\theta=s\\)，同一条射线上的所有点满足\n\\[\nx\\cos\\theta+y\\sin\\theta=s.\n\\tag{4}\\]\n这一定义非常重要：\\(\\theta\\) 描述射线法线方向，而不是射线自身的传播方向。\n\n\n\n\n\n\n警告常见混淆\n\n\n\n不同教材可能把 \\(\\theta\\) 定义为射线方向角，也可能定义为法向角。两种约定都可以使用，但公式中的正负号和 \\(90^\\circ\\) 偏移必须保持一致。",
     "crumbs": [
       "WEIZHENG WANG",
       "第一部分 · CT 基础",
-      "01 成像物理基础"
+      "02 平行束扫描几何"
     ]
   },
   {
-    "objectID": "ct-foundations.html#探测器校正",
-    "href": "ct-foundations.html#探测器校正",
-    "title": "成像物理基础",
-    "section": "3 探测器校正",
-    "text": "3 探测器校正\n设暗场图像为 \\(D\\)，平场图像为 \\(F\\)，样品图像为 \\(R\\)，常用归一化为\n\\[\nT = \\frac{R-D}{F-D}, \\qquad p=-\\ln T.\n\\tag{3}\\]\n当 \\(R-D\\le 0\\) 或像素饱和时，直接使用 式 3 会产生无穷值或异常条纹。工程实现中应在对数前完成坏点修复、阈值截断和有效性标记。",
+    "objectID": "parallel-beam-geometry.html#投影覆盖范围",
+    "href": "parallel-beam-geometry.html#投影覆盖范围",
+    "title": "平行束扫描几何",
+    "section": "3 投影覆盖范围",
+    "text": "3 投影覆盖范围\n对于理想二维平行束 CT，\\(\\theta\\in[0,\\pi)\\) 已包含全部独立直线，因为\n\\[\np_{\\theta+\\pi}(s)=p_\\theta(-s).\n\\tag{5}\\]\n式 5 表明 \\(180^\\circ\\) 后的投影与已有投影重复，只是探测器坐标方向相反。",
     "crumbs": [
       "WEIZHENG WANG",
       "第一部分 · CT 基础",
-      "01 成像物理基础"
+      "02 平行束扫描几何"
     ]
   },
   {
-    "objectID": "ct-foundations.html#多能谱模型",
-    "href": "ct-foundations.html#多能谱模型",
-    "title": "成像物理基础",
-    "section": "4 多能谱模型",
-    "text": "4 多能谱模型\n真实 X 射线源具有能谱 \\(S(E)\\)，探测器也具有能量响应 \\(\\eta(E)\\)。测量强度更接近\n\\[\nI\n=\\int S(E)\\eta(E)\n\\exp\\left[-\\int_L\\mu(\\boldsymbol{x},E)\\,\\mathrm{d}\\ell\\right]\n\\mathrm{d}E.\n\\tag{4}\\]\n由于能量积分位于指数函数之外，对 \\(I/I_0\\) 取对数后通常不再等价于某个固定 \\(\\mu\\) 的线积分。这是束硬化伪影产生的根本原因之一。",
+    "objectID": "parallel-beam-geometry.html#离散采样",
+    "href": "parallel-beam-geometry.html#离散采样",
+    "title": "平行束扫描几何",
+    "section": "4 离散采样",
+    "text": "4 离散采样\n设探测器间距为 \\(\\Delta s\\)，角度步长为 \\(\\Delta\\theta\\)，离散坐标可写为\n\\[\ns_m=(m-m_0)\\Delta s,\n\\qquad\n\\theta_k=k\\Delta\\theta.\n\\tag{6}\\]\n这些采样参数决定正弦图的尺寸，也决定能够恢复的空间分辨率和角向混叠程度。相关条件将在 采样、噪声与伪影 中展开。\n\n习题 1 (几何练习) 证明 \\(\\boldsymbol{n}_\\theta\\) 与 \\(\\boldsymbol{t}_\\theta\\) 正交，并验证坐标变换 式 3 的雅可比行列式绝对值为 1。",
     "crumbs": [
       "WEIZHENG WANG",
       "第一部分 · CT 基础",
-      "01 成像物理基础"
+      "02 平行束扫描几何"
     ]
   },
   {
-    "objectID": "ct-foundations.html#从物理到数学模型",
-    "href": "ct-foundations.html#从物理到数学模型",
-    "title": "成像物理基础",
-    "section": "5 从物理到数学模型",
-    "text": "5 从物理到数学模型\n在后续平行束章节中，我们首先采用理想单能模型，把 \\(f(x,y)\\) 视为二维衰减系数分布，并把 式 2 记为投影 \\(p_\\theta(s)\\)。完成解析推导后，再在 采样、噪声与伪影 中逐步放松这些条件。\n\n\n\n\n\n\n注记本节小结\n\n\n\nCT 并不是直接重构探测器强度，而是重构经过校正和负对数变换后的射线积分数据。物理模型决定了投影数据是否符合 Radon 变换假设。",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "X 射线成像与 CT 重构",
+    "section": "",
+    "text": "这套课程从最简单的二维平行束模型出发，把几何、物理、数学与代码放在同一条推导链上。公式不是结论陈列，而是用来解释正弦图如何形成、反投影为何模糊，以及滤波为什么能够恢复空间频率。",
     "crumbs": [
       "WEIZHENG WANG",
-      "第一部分 · CT 基础",
-      "01 成像物理基础"
+      "教学首页"
+    ]
+  },
+  {
+    "objectID": "index.html#学习路径",
+    "href": "index.html#学习路径",
+    "title": "X 射线成像与 CT 重构",
+    "section": "1 学习路径",
+    "text": "1 学习路径\n\n\n1.1 01 · 成像物理\n从 Beer–Lambert 定律出发，建立强度、衰减系数和线积分之间的关系。\n开始学习\n\n\n1.2 02 · 扫描几何\n定义平行束坐标系、探测器坐标、旋转角和射线路径。\n进入几何\n\n\n1.3 03 · Radon 变换\n理解投影、正弦图、角度冗余以及二维物体到投影空间的映射。\n学习 Radon 变换\n\n\n1.4 04 · 滤波反投影\n从傅里叶切片定理推导 Ramp 滤波器和 FBP 重构公式。\n学习 FBP\n\n\n1.5 05 · 数值实验\n使用 Python 生成 Phantom、正弦图、反投影和滤波重构结果。\n运行实验\n\n\n1.6 06 · 伪影分析\n比较欠采样、有限角、噪声、探测器截断和模型误差的影响。\n分析伪影\n\n\n1.7 Special Topic · Propagation Phase Contrast\n从复折射率、TIE 和 PAD 假设出发，推导单距离相位恢复及其傅里叶域实现。\nRead the chapter",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "教学首页"
+    ]
+  },
+  {
+    "objectID": "index.html#阅读约定",
+    "href": "index.html#阅读约定",
+    "title": "X 射线成像与 CT 重构",
+    "section": "2 阅读约定",
+    "text": "2 阅读约定\n\n向量使用粗体，例如 \\(\\boldsymbol{x}=(x,y)^\\mathsf{T}\\)。\n连续物体记为 \\(f(x,y)\\)，投影记为 \\(p_\\theta(s)\\)。\n每个核心公式都具有编号，可以跨章节引用。\n推导后给出物理解释，再给出可运行的数值实验。\n“注意”说明模型条件，“实践”说明实现细节，“思考”用于练习。\n\n\n\n\n\n\n\n提示推荐起点\n\n\n\n第一次阅读时依次完成 成像物理基础、平行束扫描几何、Radon 变换 和 滤波反投影。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "教学首页"
+    ]
+  },
+  {
+    "objectID": "index.html#当前内容状态",
+    "href": "index.html#当前内容状态",
+    "title": "X 射线成像与 CT 重构",
+    "section": "3 当前内容状态",
+    "text": "3 当前内容状态\n\n\n\n模块\n状态\n主要输出\n\n\n\n\n平行束 CT\n已搭建\n完整推导框架、核心公式、Python 示例\n\n\n扇束 CT\n规划中\n加权、重排与扇束 FBP\n\n\n锥束 CT\n规划中\nFDK 几何与近似条件\n\n\n迭代重构\n规划中\nART、SART、正则化模型\n\n\n深度学习重构\n规划中\n数据一致性与学习型先验",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "教学首页"
+    ]
+  },
+  {
+    "objectID": "exercises.html",
+    "href": "exercises.html",
+    "title": "练习与推导",
+    "section": "",
+    "text": "习题 1 (负对数变换) 从 Beer–Lambert 定律推导 负对数投影公式，并说明为什么暗场和平场误差会在厚物体区域被放大。\n\n\n习题 2 (角度约定) 若教材把 \\(\\theta\\) 定义为射线方向角而不是法向角，请重新写出 直线隐式方程与参数方程。\n\n\n习题 3 (点目标的正弦轨迹) 从 \\(s=x_0\\cos\\theta+y_0\\sin\\theta\\) 推导 点目标的极坐标正弦轨迹，并说明如何从正弦图振幅估计点到旋转中心的距离。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "学习与拓展",
+      "练习与推导"
+    ]
+  },
+  {
+    "objectID": "exercises.html#概念题",
+    "href": "exercises.html#概念题",
+    "title": "练习与推导",
+    "section": "",
+    "text": "习题 1 (负对数变换) 从 Beer–Lambert 定律推导 负对数投影公式，并说明为什么暗场和平场误差会在厚物体区域被放大。\n\n\n习题 2 (角度约定) 若教材把 \\(\\theta\\) 定义为射线方向角而不是法向角，请重新写出 直线隐式方程与参数方程。\n\n\n习题 3 (点目标的正弦轨迹) 从 \\(s=x_0\\cos\\theta+y_0\\sin\\theta\\) 推导 点目标的极坐标正弦轨迹，并说明如何从正弦图振幅估计点到旋转中心的距离。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "学习与拓展",
+      "练习与推导"
+    ]
+  },
+  {
+    "objectID": "exercises.html#推导题",
+    "href": "exercises.html#推导题",
+    "title": "练习与推导",
+    "section": "2 推导题",
+    "text": "2 推导题\n\n习题 4 (傅里叶切片定理) 把 Radon 变换参数式 代入 投影的一维傅里叶变换，通过坐标变换证明傅里叶切片定理。\n\n\n习题 5 (Ramp 滤波器来源) 从二维逆傅里叶变换的直角坐标积分出发，转换到 \\((\\omega,\\theta)\\) 极坐标，解释为什么 雅可比因子 为 \\(|\\omega|\\)。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "学习与拓展",
+      "练习与推导"
+    ]
+  },
+  {
+    "objectID": "exercises.html#编程题",
+    "href": "exercises.html#编程题",
+    "title": "练习与推导",
+    "section": "3 编程题",
+    "text": "3 编程题\n\n仅使用 NumPy 实现一维 Ramp 滤波，不调用 iradon。\n分别使用 30、60、180 和 360 个投影角重构同一 Phantom，绘制误差随角度数量的变化。\n给正弦图加入 Poisson 噪声，比较 Ramp、Hann 和 Shepp–Logan 滤波器。\n人为删除 \\(60^\\circ\\) 的投影区间，观察有限角伪影的方向性。\n给正弦图添加固定列偏差，验证环状伪影的形成。\n\n\n\n\n\n\n\n提示后续设计\n\n\n\n后续版本可为每道题加入折叠答案、自动评分 Notebook 和可调参数的交互式图形。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "学习与拓展",
+      "练习与推导"
     ]
   },
   {
@@ -432,155 +380,447 @@
     ]
   },
   {
-    "objectID": "exercises.html",
-    "href": "exercises.html",
-    "title": "练习与推导",
+    "objectID": "ct-foundations.html",
+    "href": "ct-foundations.html",
+    "title": "成像物理基础",
     "section": "",
-    "text": "习题 1 (负对数变换) 从 Beer–Lambert 定律推导 负对数投影公式，并说明为什么暗场和平场误差会在厚物体区域被放大。\n\n\n习题 2 (角度约定) 若教材把 \\(\\theta\\) 定义为射线方向角而不是法向角，请重新写出 直线隐式方程与参数方程。\n\n\n习题 3 (点目标的正弦轨迹) 从 \\(s=x_0\\cos\\theta+y_0\\sin\\theta\\) 推导 点目标的极坐标正弦轨迹，并说明如何从正弦图振幅估计点到旋转中心的距离。",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "学习与拓展",
-      "练习与推导"
-    ]
-  },
-  {
-    "objectID": "exercises.html#概念题",
-    "href": "exercises.html#概念题",
-    "title": "练习与推导",
-    "section": "",
-    "text": "习题 1 (负对数变换) 从 Beer–Lambert 定律推导 负对数投影公式，并说明为什么暗场和平场误差会在厚物体区域被放大。\n\n\n习题 2 (角度约定) 若教材把 \\(\\theta\\) 定义为射线方向角而不是法向角，请重新写出 直线隐式方程与参数方程。\n\n\n习题 3 (点目标的正弦轨迹) 从 \\(s=x_0\\cos\\theta+y_0\\sin\\theta\\) 推导 点目标的极坐标正弦轨迹，并说明如何从正弦图振幅估计点到旋转中心的距离。",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "学习与拓展",
-      "练习与推导"
-    ]
-  },
-  {
-    "objectID": "exercises.html#推导题",
-    "href": "exercises.html#推导题",
-    "title": "练习与推导",
-    "section": "2 推导题",
-    "text": "2 推导题\n\n习题 4 (傅里叶切片定理) 把 Radon 变换参数式 代入 投影的一维傅里叶变换，通过坐标变换证明傅里叶切片定理。\n\n\n习题 5 (Ramp 滤波器来源) 从二维逆傅里叶变换的直角坐标积分出发，转换到 \\((\\omega,\\theta)\\) 极坐标，解释为什么 雅可比因子 为 \\(|\\omega|\\)。",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "学习与拓展",
-      "练习与推导"
-    ]
-  },
-  {
-    "objectID": "exercises.html#编程题",
-    "href": "exercises.html#编程题",
-    "title": "练习与推导",
-    "section": "3 编程题",
-    "text": "3 编程题\n\n仅使用 NumPy 实现一维 Ramp 滤波，不调用 iradon。\n分别使用 30、60、180 和 360 个投影角重构同一 Phantom，绘制误差随角度数量的变化。\n给正弦图加入 Poisson 噪声，比较 Ramp、Hann 和 Shepp–Logan 滤波器。\n人为删除 \\(60^\\circ\\) 的投影区间，观察有限角伪影的方向性。\n给正弦图添加固定列偏差，验证环状伪影的形成。\n\n\n\n\n\n\n\n提示后续设计\n\n\n\n后续版本可为每道题加入折叠答案、自动评分 Notebook 和可调参数的交互式图形。",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "学习与拓展",
-      "练习与推导"
-    ]
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "X 射线成像与 CT 重构",
-    "section": "",
-    "text": "这套课程从最简单的二维平行束模型出发，把几何、物理、数学与代码放在同一条推导链上。公式不是结论陈列，而是用来解释正弦图如何形成、反投影为何模糊，以及滤波为什么能够恢复空间频率。",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "教学首页"
-    ]
-  },
-  {
-    "objectID": "index.html#学习路径",
-    "href": "index.html#学习路径",
-    "title": "X 射线成像与 CT 重构",
-    "section": "1 学习路径",
-    "text": "1 学习路径\n\n\n1.1 01 · 成像物理\n从 Beer–Lambert 定律出发，建立强度、衰减系数和线积分之间的关系。\n开始学习\n\n\n1.2 02 · 扫描几何\n定义平行束坐标系、探测器坐标、旋转角和射线路径。\n进入几何\n\n\n1.3 03 · Radon 变换\n理解投影、正弦图、角度冗余以及二维物体到投影空间的映射。\n学习 Radon 变换\n\n\n1.4 04 · 滤波反投影\n从傅里叶切片定理推导 Ramp 滤波器和 FBP 重构公式。\n学习 FBP\n\n\n1.5 05 · 数值实验\n使用 Python 生成 Phantom、正弦图、反投影和滤波重构结果。\n运行实验\n\n\n1.6 06 · 伪影分析\n比较欠采样、有限角、噪声、探测器截断和模型误差的影响。\n分析伪影",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "教学首页"
-    ]
-  },
-  {
-    "objectID": "index.html#阅读约定",
-    "href": "index.html#阅读约定",
-    "title": "X 射线成像与 CT 重构",
-    "section": "2 阅读约定",
-    "text": "2 阅读约定\n\n向量使用粗体，例如 \\(\\boldsymbol{x}=(x,y)^\\mathsf{T}\\)。\n连续物体记为 \\(f(x,y)\\)，投影记为 \\(p_\\theta(s)\\)。\n每个核心公式都具有编号，可以跨章节引用。\n推导后给出物理解释，再给出可运行的数值实验。\n“注意”说明模型条件，“实践”说明实现细节，“思考”用于练习。\n\n\n\n\n\n\n\n提示推荐起点\n\n\n\n第一次阅读时依次完成 成像物理基础、平行束扫描几何、Radon 变换 和 滤波反投影。",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "教学首页"
-    ]
-  },
-  {
-    "objectID": "index.html#当前内容状态",
-    "href": "index.html#当前内容状态",
-    "title": "X 射线成像与 CT 重构",
-    "section": "3 当前内容状态",
-    "text": "3 当前内容状态\n\n\n\n模块\n状态\n主要输出\n\n\n\n\n平行束 CT\n已搭建\n完整推导框架、核心公式、Python 示例\n\n\n扇束 CT\n规划中\n加权、重排与扇束 FBP\n\n\n锥束 CT\n规划中\nFDK 几何与近似条件\n\n\n迭代重构\n规划中\nART、SART、正则化模型\n\n\n深度学习重构\n规划中\n数据一致性与学习型先验",
-    "crumbs": [
-      "WEIZHENG WANG",
-      "教学首页"
-    ]
-  },
-  {
-    "objectID": "parallel-beam-geometry.html",
-    "href": "parallel-beam-geometry.html",
-    "title": "平行束扫描几何",
-    "section": "",
-    "text": "令二维物体的衰减系数分布为 \\(f(x,y)\\)。对投影角 \\(\\theta\\)，定义单位法向量与射线方向向量\n\\[\n\\boldsymbol{n}_\\theta=\n\\begin{bmatrix}\\cos\\theta\\\\\\sin\\theta\\end{bmatrix},\n\\qquad\n\\boldsymbol{t}_\\theta=\n\\begin{bmatrix}-\\sin\\theta\\\\\\cos\\theta\\end{bmatrix}.\n\\tag{1}\\]\n其中，\\(s\\) 表示射线到原点的有符号垂直距离，\\(t\\) 表示沿射线方向的位置。任意射线点可写为\n\\[\n\\boldsymbol{x}(s,t;\\theta)\n=s\\boldsymbol{n}_\\theta+t\\boldsymbol{t}_\\theta.\n\\tag{2}\\]\n展开 式 2 得\n\\[\nx=s\\cos\\theta-t\\sin\\theta,\n\\qquad\ny=s\\sin\\theta+t\\cos\\theta.\n\\tag{3}\\]",
+    "text": "完成本节后，读者应能解释：\n\n为什么 CT 原始强度需要进行负对数变换；\n线性衰减系数 \\(\\mu(\\boldsymbol{x},E)\\) 的物理意义；\n单能模型与多能谱模型之间的差别；\n暗场、平场和散射误差如何进入投影数据。",
     "crumbs": [
       "WEIZHENG WANG",
       "第一部分 · CT 基础",
-      "02 平行束扫描几何"
+      "01 成像物理基础"
     ]
   },
   {
-    "objectID": "parallel-beam-geometry.html#坐标定义",
-    "href": "parallel-beam-geometry.html#坐标定义",
-    "title": "平行束扫描几何",
+    "objectID": "ct-foundations.html#学习目标",
+    "href": "ct-foundations.html#学习目标",
+    "title": "成像物理基础",
     "section": "",
-    "text": "令二维物体的衰减系数分布为 \\(f(x,y)\\)。对投影角 \\(\\theta\\)，定义单位法向量与射线方向向量\n\\[\n\\boldsymbol{n}_\\theta=\n\\begin{bmatrix}\\cos\\theta\\\\\\sin\\theta\\end{bmatrix},\n\\qquad\n\\boldsymbol{t}_\\theta=\n\\begin{bmatrix}-\\sin\\theta\\\\\\cos\\theta\\end{bmatrix}.\n\\tag{1}\\]\n其中，\\(s\\) 表示射线到原点的有符号垂直距离，\\(t\\) 表示沿射线方向的位置。任意射线点可写为\n\\[\n\\boldsymbol{x}(s,t;\\theta)\n=s\\boldsymbol{n}_\\theta+t\\boldsymbol{t}_\\theta.\n\\tag{2}\\]\n展开 式 2 得\n\\[\nx=s\\cos\\theta-t\\sin\\theta,\n\\qquad\ny=s\\sin\\theta+t\\cos\\theta.\n\\tag{3}\\]",
+    "text": "完成本节后，读者应能解释：\n\n为什么 CT 原始强度需要进行负对数变换；\n线性衰减系数 \\(\\mu(\\boldsymbol{x},E)\\) 的物理意义；\n单能模型与多能谱模型之间的差别；\n暗场、平场和散射误差如何进入投影数据。",
     "crumbs": [
       "WEIZHENG WANG",
       "第一部分 · CT 基础",
-      "02 平行束扫描几何"
+      "01 成像物理基础"
     ]
   },
   {
-    "objectID": "parallel-beam-geometry.html#射线的隐式方程",
-    "href": "parallel-beam-geometry.html#射线的隐式方程",
-    "title": "平行束扫描几何",
-    "section": "2 射线的隐式方程",
-    "text": "2 射线的隐式方程\n由于 \\(\\boldsymbol{x}\\cdot\\boldsymbol{n}_\\theta=s\\)，同一条射线上的所有点满足\n\\[\nx\\cos\\theta+y\\sin\\theta=s.\n\\tag{4}\\]\n这一定义非常重要：\\(\\theta\\) 描述射线法线方向，而不是射线自身的传播方向。\n\n\n\n\n\n\n警告常见混淆\n\n\n\n不同教材可能把 \\(\\theta\\) 定义为射线方向角，也可能定义为法向角。两种约定都可以使用，但公式中的正负号和 \\(90^\\circ\\) 偏移必须保持一致。",
+    "objectID": "ct-foundations.html#单色-x-射线衰减",
+    "href": "ct-foundations.html#单色-x-射线衰减",
+    "title": "成像物理基础",
+    "section": "2 单色 X 射线衰减",
+    "text": "2 单色 X 射线衰减\n\n定义 1 (线性衰减系数) \\(\\mu(\\boldsymbol{x})\\) 表示单位路径长度上的相对强度损失，其量纲通常为 \\(\\mathrm{mm}^{-1}\\) 或 \\(\\mathrm{cm}^{-1}\\)。\n\n对于沿射线 \\(L\\) 传播的单能 X 射线，Beer–Lambert 定律写为\n\\[\nI = I_0\\exp\\left[-\\int_L \\mu(\\boldsymbol{x})\\,\\mathrm{d}\\ell\\right].\n\\tag{1}\\]\n对 式 1 两侧取负对数，得到\n\\[\np_L\n=-\\ln\\frac{I}{I_0}\n=\\int_L \\mu(\\boldsymbol{x})\\,\\mathrm{d}\\ell.\n\\tag{2}\\]\n式 2 是解析 CT 重构的关键：经过负对数变换后，测得的强度比被转化为衰减系数的线积分。\n\n\n\n\n\n\n重要模型条件\n\n\n\n式 2 假设单能谱、无散射、探测器线性且 \\(I_0\\) 已知。真实工业 CT 往往不完全满足这些条件，因此预处理和物理校正与重构算法同等重要。",
     "crumbs": [
       "WEIZHENG WANG",
       "第一部分 · CT 基础",
-      "02 平行束扫描几何"
+      "01 成像物理基础"
     ]
   },
   {
-    "objectID": "parallel-beam-geometry.html#投影覆盖范围",
-    "href": "parallel-beam-geometry.html#投影覆盖范围",
-    "title": "平行束扫描几何",
-    "section": "3 投影覆盖范围",
-    "text": "3 投影覆盖范围\n对于理想二维平行束 CT，\\(\\theta\\in[0,\\pi)\\) 已包含全部独立直线，因为\n\\[\np_{\\theta+\\pi}(s)=p_\\theta(-s).\n\\tag{5}\\]\n式 5 表明 \\(180^\\circ\\) 后的投影与已有投影重复，只是探测器坐标方向相反。",
+    "objectID": "ct-foundations.html#探测器校正",
+    "href": "ct-foundations.html#探测器校正",
+    "title": "成像物理基础",
+    "section": "3 探测器校正",
+    "text": "3 探测器校正\n设暗场图像为 \\(D\\)，平场图像为 \\(F\\)，样品图像为 \\(R\\)，常用归一化为\n\\[\nT = \\frac{R-D}{F-D}, \\qquad p=-\\ln T.\n\\tag{3}\\]\n当 \\(R-D\\le 0\\) 或像素饱和时，直接使用 式 3 会产生无穷值或异常条纹。工程实现中应在对数前完成坏点修复、阈值截断和有效性标记。",
     "crumbs": [
       "WEIZHENG WANG",
       "第一部分 · CT 基础",
-      "02 平行束扫描几何"
+      "01 成像物理基础"
     ]
   },
   {
-    "objectID": "parallel-beam-geometry.html#离散采样",
-    "href": "parallel-beam-geometry.html#离散采样",
-    "title": "平行束扫描几何",
-    "section": "4 离散采样",
-    "text": "4 离散采样\n设探测器间距为 \\(\\Delta s\\)，角度步长为 \\(\\Delta\\theta\\)，离散坐标可写为\n\\[\ns_m=(m-m_0)\\Delta s,\n\\qquad\n\\theta_k=k\\Delta\\theta.\n\\tag{6}\\]\n这些采样参数决定正弦图的尺寸，也决定能够恢复的空间分辨率和角向混叠程度。相关条件将在 采样、噪声与伪影 中展开。\n\n习题 1 (几何练习) 证明 \\(\\boldsymbol{n}_\\theta\\) 与 \\(\\boldsymbol{t}_\\theta\\) 正交，并验证坐标变换 式 3 的雅可比行列式绝对值为 1。",
+    "objectID": "ct-foundations.html#多能谱模型",
+    "href": "ct-foundations.html#多能谱模型",
+    "title": "成像物理基础",
+    "section": "4 多能谱模型",
+    "text": "4 多能谱模型\n真实 X 射线源具有能谱 \\(S(E)\\)，探测器也具有能量响应 \\(\\eta(E)\\)。测量强度更接近\n\\[\nI\n=\\int S(E)\\eta(E)\n\\exp\\left[-\\int_L\\mu(\\boldsymbol{x},E)\\,\\mathrm{d}\\ell\\right]\n\\mathrm{d}E.\n\\tag{4}\\]\n由于能量积分位于指数函数之外，对 \\(I/I_0\\) 取对数后通常不再等价于某个固定 \\(\\mu\\) 的线积分。这是束硬化伪影产生的根本原因之一。",
     "crumbs": [
       "WEIZHENG WANG",
       "第一部分 · CT 基础",
-      "02 平行束扫描几何"
+      "01 成像物理基础"
+    ]
+  },
+  {
+    "objectID": "ct-foundations.html#从物理到数学模型",
+    "href": "ct-foundations.html#从物理到数学模型",
+    "title": "成像物理基础",
+    "section": "5 从物理到数学模型",
+    "text": "5 从物理到数学模型\n在后续平行束章节中，我们首先采用理想单能模型，把 \\(f(x,y)\\) 视为二维衰减系数分布，并把 式 2 记为投影 \\(p_\\theta(s)\\)。完成解析推导后，再在 采样、噪声与伪影 中逐步放松这些条件。\n\n\n\n\n\n\n注记本节小结\n\n\n\nCT 并不是直接重构探测器强度，而是重构经过校正和负对数变换后的射线积分数据。物理模型决定了投影数据是否符合 Radon 变换假设。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第一部分 · CT 基础",
+      "01 成像物理基础"
+    ]
+  },
+  {
+    "objectID": "filtered-backprojection.html",
+    "href": "filtered-backprojection.html",
+    "title": "滤波反投影",
+    "section": "",
+    "text": "反投影算子把投影值沿原射线路径均匀“涂回”图像：\n\\[\n\\mathcal{B}p(x,y)\n=\\int_0^\\pi\np_\\theta(x\\cos\\theta+y\\sin\\theta)\n\\,\\mathrm{d}\\theta.\n\\tag{1}\\]\n简单反投影能够形成物体轮廓，但结果会出现明显的 \\(1/r\\) 型模糊。原因是低频成分在极坐标频域中被过度累积。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "04 滤波反投影"
+    ]
+  },
+  {
+    "objectID": "filtered-backprojection.html#简单反投影",
+    "href": "filtered-backprojection.html#简单反投影",
+    "title": "滤波反投影",
+    "section": "",
+    "text": "反投影算子把投影值沿原射线路径均匀“涂回”图像：\n\\[\n\\mathcal{B}p(x,y)\n=\\int_0^\\pi\np_\\theta(x\\cos\\theta+y\\sin\\theta)\n\\,\\mathrm{d}\\theta.\n\\tag{1}\\]\n简单反投影能够形成物体轮廓，但结果会出现明显的 \\(1/r\\) 型模糊。原因是低频成分在极坐标频域中被过度累积。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "04 滤波反投影"
+    ]
+  },
+  {
+    "objectID": "filtered-backprojection.html#一维投影傅里叶变换",
+    "href": "filtered-backprojection.html#一维投影傅里叶变换",
+    "title": "滤波反投影",
+    "section": "2 一维投影傅里叶变换",
+    "text": "2 一维投影傅里叶变换\n定义投影关于 \\(s\\) 的一维傅里叶变换\n\\[\nP_\\theta(\\omega)\n=\\int_{-\\infty}^{\\infty}\np_\\theta(s)e^{-i2\\pi\\omega s}\\,\\mathrm{d}s.\n\\tag{2}\\]\n二维物体的傅里叶变换为\n\\[\nF(u,v)\n=\\int_{\\mathbb{R}^2}\nf(x,y)e^{-i2\\pi(ux+vy)}\\,\\mathrm{d}x\\,\\mathrm{d}y.\n\\tag{3}\\]\n\n定理 1 (傅里叶切片定理) 投影 \\(p_\\theta(s)\\) 的一维傅里叶变换，等于二维物体频谱 \\(F(u,v)\\) 沿角度 \\(\\theta\\)、通过原点的一条径向切片：\n\\[\nP_\\theta(\\omega)\n=F(\\omega\\cos\\theta,\\omega\\sin\\theta).\n\\tag{4}\\]",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "04 滤波反投影"
+    ]
+  },
+  {
+    "objectID": "filtered-backprojection.html#逆变换与-ramp-滤波",
+    "href": "filtered-backprojection.html#逆变换与-ramp-滤波",
+    "title": "滤波反投影",
+    "section": "3 逆变换与 Ramp 滤波",
+    "text": "3 逆变换与 Ramp 滤波\n将二维逆傅里叶积分转换到极坐标频域，面积元满足\n\\[\n\\mathrm{d}u\\,\\mathrm{d}v\n=|\\omega|\\,\\mathrm{d}\\omega\\,\\mathrm{d}\\theta.\n\\tag{5}\\]\n其中雅可比因子 \\(|\\omega|\\) 正是 Ramp 滤波器。定义滤波投影\n\\[\nq_\\theta(s)\n=\\mathcal{F}^{-1}\n\\left\\{\n|\\omega|P_\\theta(\\omega)\n\\right\\}(s),\n\\tag{6}\\]\n则二维物体可写为\n\\[\nf(x,y)\n=\\int_0^\\pi\nq_\\theta(x\\cos\\theta+y\\sin\\theta)\n\\,\\mathrm{d}\\theta.\n\\tag{7}\\]\n式 7 就是平行束滤波反投影公式。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "04 滤波反投影"
+    ]
+  },
+  {
+    "objectID": "filtered-backprojection.html#窗函数滤波器",
+    "href": "filtered-backprojection.html#窗函数滤波器",
+    "title": "滤波反投影",
+    "section": "4 窗函数滤波器",
+    "text": "4 窗函数滤波器\n理想 Ramp 滤波器增强高频，也会放大噪声。实践中常使用\n\\[\nH(\\omega)=|\\omega|W(\\omega),\n\\tag{8}\\]\n其中 \\(W(\\omega)\\) 可以是 Shepp–Logan、Cosine、Hamming 或 Hann 窗。窗口越强，高频噪声越低，但空间分辨率也会下降。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "04 滤波反投影"
+    ]
+  },
+  {
+    "objectID": "filtered-backprojection.html#离散算法",
+    "href": "filtered-backprojection.html#离散算法",
+    "title": "滤波反投影",
+    "section": "5 离散算法",
+    "text": "5 离散算法\n对每个角度 \\(\\theta_k\\)：\n\n对离散投影 \\(p_k[m]\\) 做一维 FFT；\n乘以离散 Ramp 或窗化 Ramp；\n做逆 FFT 得到 \\(q_k[m]\\)；\n对每个重构像素计算 \\(s=x\\cos\\theta_k+y\\sin\\theta_k\\)；\n在探测器坐标上插值 \\(q_k(s)\\) 并对所有角度累加。\n\n离散近似通常写为\n\\[\nf[i,j]\n\\approx\n\\Delta\\theta\n\\sum_{k=0}^{N_\\theta-1}\nq_k\\!\\left(x_i\\cos\\theta_k+y_j\\sin\\theta_k\\right).\n\\tag{9}\\]\n下一节通过可运行的 Python 数值实验 比较反投影与 FBP。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "04 滤波反投影"
+    ]
+  },
+  {
+    "objectID": "numerical-experiments.html",
+    "href": "numerical-experiments.html",
+    "title": "Python 数值实验",
+    "section": "",
+    "text": "本节使用 NumPy、Matplotlib 和 scikit-image。代码在构建网站时执行，输出图像会直接嵌入静态网页。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "05 Python 数值实验"
+    ]
+  },
+  {
+    "objectID": "numerical-experiments.html#实验环境",
+    "href": "numerical-experiments.html#实验环境",
+    "title": "Python 数值实验",
+    "section": "",
+    "text": "本节使用 NumPy、Matplotlib 和 scikit-image。代码在构建网站时执行，输出图像会直接嵌入静态网页。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "05 Python 数值实验"
+    ]
+  },
+  {
+    "objectID": "numerical-experiments.html#生成-phantom-与正弦图",
+    "href": "numerical-experiments.html#生成-phantom-与正弦图",
+    "title": "Python 数值实验",
+    "section": "2 生成 Phantom 与正弦图",
+    "text": "2 生成 Phantom 与正弦图\n\n代码\nimage = resize(shepp_logan_phantom(), (256, 256), anti_aliasing=True)\ntheta = np.linspace(0.0, 180.0, max(image.shape), endpoint=False)\nsinogram = radon(image, theta=theta, circle=True)\n\nfig, axes = plt.subplots(1, 2, figsize=(10, 4))\naxes[0].imshow(image, cmap=\"gray\")\naxes[0].set_title(\"Phantom\")\naxes[0].axis(\"off\")\naxes[1].imshow(\n    sinogram,\n    cmap=\"gray\",\n    aspect=\"auto\",\n    extent=(theta.min(), theta.max(), sinogram.shape[0], 0),\n)\naxes[1].set_title(\"Sinogram\")\naxes[1].set_xlabel(r\"Projection angle $\\theta$ (degree)\")\naxes[1].set_ylabel(r\"Detector coordinate $s$\")\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\n\n图 1: 二维衰减系数分布\n\n\n\n\n\nShepp-Logan Phantom 及其平行束正弦图。\n\n\n\n图 1 展示了二维物体与投影空间之间的映射。椭圆边界在正弦图中表现为相互交叠的周期轨迹。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "05 Python 数值实验"
+    ]
+  },
+  {
+    "objectID": "numerical-experiments.html#简单反投影与-fbp",
+    "href": "numerical-experiments.html#简单反投影与-fbp",
+    "title": "Python 数值实验",
+    "section": "3 简单反投影与 FBP",
+    "text": "3 简单反投影与 FBP\n\n\n代码\nbackprojection = iradon(\n    sinogram,\n    theta=theta,\n    filter_name=None,\n    circle=True,\n)\nfbp = iradon(\n    sinogram,\n    theta=theta,\n    filter_name=\"ramp\",\n    circle=True,\n)\n\nfig, axes = plt.subplots(1, 3, figsize=(12, 4))\nfor ax, data, title in zip(\n    axes,\n    [image, backprojection, fbp],\n    [\"Reference\", \"Backprojection\", \"Filtered backprojection\"],\n):\n    ax.imshow(data, cmap=\"gray\")\n    ax.set_title(title)\n    ax.axis(\"off\")\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n图 2: 未滤波反投影与 Ramp 滤波反投影的比较。\n\n\n\n\n\n简单反投影在整个图像中形成低频拖尾；Ramp 滤波补偿频域采样密度后，边界和内部结构被恢复。这与 极坐标雅可比和 FBP 公式 的推导一致。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "05 Python 数值实验"
+    ]
+  },
+  {
+    "objectID": "numerical-experiments.html#定量误差",
+    "href": "numerical-experiments.html#定量误差",
+    "title": "Python 数值实验",
+    "section": "4 定量误差",
+    "text": "4 定量误差\n\n\n代码\nmse_backprojection = np.mean((image - backprojection) ** 2)\nmse_fbp = np.mean((image - fbp) ** 2)\n\nprint(f\"Backprojection MSE: {mse_backprojection:.6f}\")\nprint(f\"FBP MSE:            {mse_fbp:.6f}\")\n\n\nBackprojection MSE: 2458.159556\nFBP MSE:            0.000802\n\n\n\n\n\n\n\n\n注记实现说明\n\n\n\n库函数内部包含离散滤波、插值和尺度归一化。后续可以新增“从零实现 FBP”章节，把 FFT 频率轴、零填充、Ramp 核和角度权重逐项展开。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "05 Python 数值实验"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html",
+    "href": "propagation-phase-contrast.html",
+    "title": "Propagation-based Phase Contrast",
+    "section": "",
+    "text": "This chapter connects the complex refractive index, projected attenuation and phase, free-space propagation, the transport-of-intensity equation (TIE), and the single-distance phase–attenuation duality (PAD) retrieval formula. The derivation uses angular spatial frequencies unless stated otherwise.",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#starting-from-the-complex-refractive-index",
+    "href": "propagation-phase-contrast.html#starting-from-the-complex-refractive-index",
+    "title": "Propagation-based Phase Contrast",
+    "section": "Starting from the Complex Refractive Index",
+    "text": "Starting from the Complex Refractive Index\nFor X-rays, the complex refractive index of a material is generally written as\n\\[\nn=1-\\delta+i\\beta,\n\\]\nwhere \\(\\delta\\) describes the phase shift induced by the material and \\(\\beta\\) describes X-ray absorption. The wavenumber in vacuum is\n\\[\nk=\\frac{2\\pi}{\\lambda},\n\\]\nwhere \\(\\lambda\\) is the X-ray wavelength.\nConsider an incident monochromatic plane wave:\n\\[\n\\Psi_{\\mathrm{in}}(z)=A_{\\mathrm{in}}e^{ikz}.\n\\]\nIf the X-ray propagates through a homogeneous material of thickness \\(t\\), the transmitted wave becomes\n\\[\n\\Psi=A_{\\mathrm{in}}e^{iknt}.\n\\]\nSubstituting the complex refractive index gives\n\\[\n\\begin{aligned}\n\\Psi\n&=A_{\\mathrm{in}}\\exp\\left[ik(1-\\delta+i\\beta)t\\right] \\\\\n&=A_{\\mathrm{in}}e^{ikt}e^{-ik\\delta t}e^{-k\\beta t}.\n\\end{aligned}\n\\]\nThe three exponential factors represent:\n\n\\(e^{ikt}\\): ordinary propagation in vacuum;\n\\(e^{-ik\\delta t}\\): the material-induced phase shift;\n\\(e^{-k\\beta t}\\): attenuation of the wave amplitude.\n\nAfter removing the common vacuum propagation phase, which does not affect the measured intensity, the exit wave immediately downstream of the sample is\n\\[\n\\Psi_0=A_{\\mathrm{in}}e^{-k\\beta t}e^{-ik\\delta t}.\n\\]",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#obtaining-intensity-and-phase-from-the-complex-wavefield",
+    "href": "propagation-phase-contrast.html#obtaining-intensity-and-phase-from-the-complex-wavefield",
+    "title": "Propagation-based Phase Contrast",
+    "section": "Obtaining Intensity and Phase from the Complex Wavefield",
+    "text": "Obtaining Intensity and Phase from the Complex Wavefield\nThe complex exit wave can be written in amplitude–phase form:\n\\[\n\\Psi_0(x,y)=\\sqrt{I_0(x,y)}e^{i\\phi(x,y)}.\n\\]\nComparing the amplitude–phase representation with the exit-wave expression gives\n\\[\n\\sqrt{I_0}=\\sqrt{I_{\\mathrm{in}}}e^{-k\\beta t},\n\\]\nand therefore\n\\[\nI_0=I_{\\mathrm{in}}e^{-2k\\beta t}.\n\\]\nThe linear attenuation coefficient is\n\\[\n\\boxed{\\mu=2k\\beta=\\frac{4\\pi\\beta}{\\lambda}}.\n\\]\nConsequently,\n\\[\n\\boxed{I_0=I_{\\mathrm{in}}e^{-\\mu t}},\n\\]\nwhich is the Beer–Lambert law. At the same time, the material-induced phase shift is\n\\[\n\\boxed{\\phi=-k\\delta t}.\n\\]\nThus, the same material modifies both the amplitude and phase of the incident X-ray wave.",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#extension-to-an-inhomogeneous-three-dimensional-object",
+    "href": "propagation-phase-contrast.html#extension-to-an-inhomogeneous-three-dimensional-object",
+    "title": "Propagation-based Phase Contrast",
+    "section": "Extension to an Inhomogeneous Three-Dimensional Object",
+    "text": "Extension to an Inhomogeneous Three-Dimensional Object\nFor a general three-dimensional object, \\(\\delta\\) and \\(\\beta\\) vary with spatial position. Along an X-ray path \\(L\\), the projected phase shift is\n\\[\n\\phi(x,y)=-k\\int_L\\delta(x,y,\\ell)\\,\\mathrm{d}\\ell.\n\\]\nThe normalized exit intensity satisfies\n\\[\n\\frac{I_0(x,y)}{I_{\\mathrm{in}}(x,y)}\n=\n\\exp\\left[\n-2k\\int_L\\beta(x,y,\\ell)\\,\\mathrm{d}\\ell\n\\right].\n\\]\nTaking the negative logarithm gives the absorption projection\n\\[\n\\begin{aligned}\np(x,y)\n&=-\\ln\\frac{I_0(x,y)}{I_{\\mathrm{in}}(x,y)} \\\\\n&=2k\\int_L\\beta(x,y,\\ell)\\,\\mathrm{d}\\ell \\\\\n&=\\int_L\\mu(x,y,\\ell)\\,\\mathrm{d}\\ell.\n\\end{aligned}\n\\]\nThe two projected quantities are therefore\n\\[\n\\phi=-k\\int_L\\delta\\,\\mathrm{d}\\ell,\n\\qquad\np=2k\\int_L\\beta\\,\\mathrm{d}\\ell.\n\\]\nThe first is the projected phase shift. The second is the conventional attenuation line integral required for CT reconstruction.",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#phaseattenuation-duality",
+    "href": "propagation-phase-contrast.html#phaseattenuation-duality",
+    "title": "Propagation-based Phase Contrast",
+    "section": "Phase–Attenuation Duality",
+    "text": "Phase–Attenuation Duality\nThe key assumption of the phase–attenuation duality (PAD) method is that\n\\[\n\\gamma=\\frac{\\delta}{\\beta}\n\\]\nis approximately constant throughout the object. Thus, \\(\\delta=\\gamma\\beta\\), and the projected phase becomes\n\\[\n\\phi=-k\\gamma\\int_L\\beta\\,\\mathrm{d}\\ell.\n\\]\nBecause the attenuation projection gives\n\\[\n\\int_L\\beta\\,\\mathrm{d}\\ell=\\frac{p}{2k},\n\\]\nthe phase and attenuation projections are related by\n\\[\n\\boxed{\n\\phi=-\\frac{\\gamma}{2}p\n=-\\frac{\\delta}{2\\beta}p\n}.\n\\]\nUsing\n\\[\np=-\\ln\\frac{I_0}{I_{\\mathrm{in}}},\n\\]\nwe obtain\n\\[\n\\boxed{\n\\phi(x,y)\n=\n\\frac{\\delta}{2\\beta}\n\\ln\\frac{I_0(x,y)}{I_{\\mathrm{in}}(x,y)}\n}.\n\\]\nSince \\(I_0&lt;I_{\\mathrm{in}}\\) for an attenuating object, the logarithm is generally negative. The recovered phase is therefore normally negative, consistent with \\(\\phi=-k\\delta t\\).\n\n\n\n\n\n\nImportantWhy the PAD assumption matters\n\n\n\nThe PAD relation connects exit-surface intensity and phase, reducing two unknown functions to one. Without an additional constraint of this kind, a single measured intensity image is generally insufficient to recover both wavefield amplitude and phase.",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#how-phase-variations-become-intensity-variations",
+    "href": "propagation-phase-contrast.html#how-phase-variations-become-intensity-variations",
+    "title": "Propagation-based Phase Contrast",
+    "section": "How Phase Variations Become Intensity Variations",
+    "text": "How Phase Variations Become Intensity Variations\nAn X-ray detector measures intensity,\n\\[\nI=|\\Psi|^2,\n\\]\nbut does not directly measure phase. Immediately after the sample, part of the object information is stored in \\(\\phi(x,y)\\). During free-space propagation, transverse phase gradients redirect the local energy flow:\n\nsome regions gain intensity and become brighter;\nother regions lose intensity and become darker.\n\nThis conversion is described by the transport-of-intensity equation:\n\\[\n\\boxed{\n\\frac{\\partial I}{\\partial z}\n=\n-\\frac{1}{k}\n\\nabla_\\perp\\cdot\n\\left(I\\nabla_\\perp\\phi\\right)\n},\n\\]\nwhere\n\\[\n\\nabla_\\perp\n=\n\\left(\n\\frac{\\partial}{\\partial x},\n\\frac{\\partial}{\\partial y}\n\\right)\n\\]\nis the transverse gradient operator.",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#derivation-of-the-transport-of-intensity-equation",
+    "href": "propagation-phase-contrast.html#derivation-of-the-transport-of-intensity-equation",
+    "title": "Propagation-based Phase Contrast",
+    "section": "Derivation of the Transport-of-Intensity Equation",
+    "text": "Derivation of the Transport-of-Intensity Equation\nIn free space, the scalar X-ray wavefield satisfies the Helmholtz equation:\n\\[\n\\nabla^2\\Psi+k^2\\Psi=0.\n\\]\nSeparate the rapidly oscillating carrier from the slowly varying envelope:\n\\[\n\\Psi(x,y,z)=\\psi(x,y,z)e^{ikz}.\n\\]\nThe longitudinal derivative is\n\\[\n\\frac{\\partial^2\\Psi}{\\partial z^2}\n=\ne^{ikz}\n\\left[\n\\frac{\\partial^2\\psi}{\\partial z^2}\n+2ik\\frac{\\partial\\psi}{\\partial z}\n-k^2\\psi\n\\right],\n\\]\nand the transverse Laplacian is\n\\[\n\\nabla_\\perp^2\\Psi=e^{ikz}\\nabla_\\perp^2\\psi.\n\\]\nSubstitution into the Helmholtz equation gives\n\\[\n\\nabla_\\perp^2\\psi\n+\n\\frac{\\partial^2\\psi}{\\partial z^2}\n+\n2ik\\frac{\\partial\\psi}{\\partial z}\n=0.\n\\]\nUnder the paraxial approximation,\n\\[\n\\left|\n\\frac{\\partial^2\\psi}{\\partial z^2}\n\\right|\n\\ll\n\\left|\n2ik\\frac{\\partial\\psi}{\\partial z}\n\\right|,\n\\]\nso the second-order longitudinal derivative is neglected. The paraxial wave equation is then\n\\[\n2ik\\frac{\\partial\\psi}{\\partial z}\n+\\nabla_\\perp^2\\psi=0,\n\\]\nor\n\\[\n\\boxed{\n\\frac{\\partial\\psi}{\\partial z}\n=\n\\frac{i}{2k}\\nabla_\\perp^2\\psi\n}.\n\\]\n\nWriting the Wavefield in Amplitude–Phase Form\nLet\n\\[\n\\psi=\\sqrt{I}e^{i\\phi},\n\\qquad\nI=\\psi^*\\psi.\n\\]\nDifferentiating the intensity with respect to \\(z\\) gives\n\\[\n\\frac{\\partial I}{\\partial z}\n=\n\\psi^*\\frac{\\partial\\psi}{\\partial z}\n+\n\\psi\\frac{\\partial\\psi^*}{\\partial z}.\n\\]\nUsing the paraxial wave equation and its complex conjugate,\n\\[\n\\frac{\\partial I}{\\partial z}\n=\n\\frac{i}{2k}\n\\left(\n\\psi^*\\nabla_\\perp^2\\psi\n-\n\\psi\\nabla_\\perp^2\\psi^*\n\\right).\n\\]\nThe vector identity\n\\[\n\\psi^*\\nabla^2\\psi-\\psi\\nabla^2\\psi^*\n=\n\\nabla\\cdot\n\\left(\n\\psi^*\\nabla\\psi-\\psi\\nabla\\psi^*\n\\right)\n\\]\ngives\n\\[\n\\frac{\\partial I}{\\partial z}\n=\n\\frac{i}{2k}\n\\nabla_\\perp\\cdot\n\\left(\n\\psi^*\\nabla_\\perp\\psi\n-\n\\psi\\nabla_\\perp\\psi^*\n\\right).\n\\]\nFor \\(\\psi=\\sqrt{I}e^{i\\phi}\\),\n\\[\n\\psi^*\\nabla_\\perp\\psi\n-\n\\psi\\nabla_\\perp\\psi^*\n=\n2iI\\nabla_\\perp\\phi.\n\\]\nTherefore,\n\\[\n\\frac{\\partial I}{\\partial z}\n=\n\\frac{i}{2k}\n\\nabla_\\perp\\cdot\n\\left(2iI\\nabla_\\perp\\phi\\right)\n=\n-\\frac{1}{k}\n\\nabla_\\perp\\cdot\n\\left(I\\nabla_\\perp\\phi\\right),\n\\]\nwhich recovers the transport-of-intensity equation.",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#physical-interpretation-of-the-tie",
+    "href": "propagation-phase-contrast.html#physical-interpretation-of-the-tie",
+    "title": "Propagation-based Phase Contrast",
+    "section": "Physical Interpretation of the TIE",
+    "text": "Physical Interpretation of the TIE\nThe TIE can be written like a continuity equation:\n\\[\n\\frac{\\partial I}{\\partial z}\n+\n\\nabla_\\perp\\cdot\\mathbf{J}_\\perp=0,\n\\]\nwhere\n\\[\n\\mathbf{J}_\\perp\n=\n\\frac{I}{k}\\nabla_\\perp\\phi\n\\]\nis the transverse energy-flow density.\nWhen \\(\\nabla_\\perp\\phi\\ne0\\), the local energy flow is deflected:\n\nif \\(\\nabla_\\perp\\cdot\\mathbf{J}_\\perp&lt;0\\), energy converges and intensity increases;\nif \\(\\nabla_\\perp\\cdot\\mathbf{J}_\\perp&gt;0\\), energy diverges and intensity decreases.\n\nMaterial boundaries generally produce large phase gradients. After propagation, they appear as bright–dark edge fringes in the measured image.",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#from-the-differential-equation-to-a-single-distance-model",
+    "href": "propagation-phase-contrast.html#from-the-differential-equation-to-a-single-distance-model",
+    "title": "Propagation-based Phase Contrast",
+    "section": "From the Differential Equation to a Single-Distance Model",
+    "text": "From the Differential Equation to a Single-Distance Model\nLet \\(I_0(x,y)\\) be the exit-surface intensity and \\(I_z(x,y)\\) the intensity measured after propagation distance \\(z\\). A first-order Taylor expansion gives\n\\[\nI_z(x,y)\n=\nI_0(x,y)\n+\nz\\left.\n\\frac{\\partial I}{\\partial z}\n\\right|_{z=0}\n+\nO(z^2).\n\\]\nNeglecting higher-order terms and substituting the transport-of-intensity equation,\n\\[\n\\boxed{\nI_z\n=\nI_0\n-\n\\frac{z}{k}\n\\nabla_\\perp\\cdot\n\\left(I_0\\nabla_\\perp\\phi\\right)\n}.\n\\]\nAt this stage, the equation contains two unknown functions: \\(I_0(x,y)\\) and \\(\\phi(x,y)\\). The PAD relation is used to eliminate \\(\\phi\\).",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#substituting-the-pad-relation-into-the-tie",
+    "href": "propagation-phase-contrast.html#substituting-the-pad-relation-into-the-tie",
+    "title": "Propagation-based Phase Contrast",
+    "section": "Substituting the PAD Relation into the TIE",
+    "text": "Substituting the PAD Relation into the TIE\nFrom the PAD intensity–phase relation,\n\\[\n\\phi\n=\n\\frac{\\delta}{2\\beta}\n\\ln\\frac{I_0}{I_{\\mathrm{in}}}.\n\\]\nAfter flat-field correction, assume that \\(I_{\\mathrm{in}}\\) is approximately uniform over the local image region. Then\n\\[\n\\begin{aligned}\n\\nabla_\\perp\\phi\n&=\n\\frac{\\delta}{2\\beta}\\nabla_\\perp\\ln I_0 \\\\\n&=\n\\frac{\\delta}{2\\beta}\n\\frac{\\nabla_\\perp I_0}{I_0}.\n\\end{aligned}\n\\]\nThus,\n\\[\nI_0\\nabla_\\perp\\phi\n=\n\\frac{\\delta}{2\\beta}\\nabla_\\perp I_0,\n\\]\nand\n\\[\n\\nabla_\\perp\\cdot\n\\left(I_0\\nabla_\\perp\\phi\\right)\n=\n\\frac{\\delta}{2\\beta}\\nabla_\\perp^2 I_0.\n\\]\nSubstitution into the first-order propagation model gives\n\\[\n\\boxed{\nI_z\n=\nI_0\n-\n\\frac{z\\delta}{2k\\beta}\n\\nabla_\\perp^2 I_0\n}.\n\\]\nDefine\n\\[\n\\boxed{\n\\alpha\n=\n\\frac{z\\delta}{2k\\beta}\n=\n\\frac{\\lambda z}{4\\pi}\n\\frac{\\delta}{\\beta}\n}.\n\\]\nThe propagation model becomes\n\\[\n\\boxed{\nI_z\n=\n\\left(1-\\alpha\\nabla_\\perp^2\\right)I_0\n}.\n\\]\nThis is the central result of the single-distance PAD derivation.",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#why-free-space-propagation-enhances-edges",
+    "href": "propagation-phase-contrast.html#why-free-space-propagation-enhances-edges",
+    "title": "Propagation-based Phase Contrast",
+    "section": "Why Free-Space Propagation Enhances Edges",
+    "text": "Why Free-Space Propagation Enhances Edges\nThe transverse Laplacian is\n\\[\n\\nabla_\\perp^2\n=\n\\frac{\\partial^2}{\\partial x^2}\n+\n\\frac{\\partial^2}{\\partial y^2}.\n\\]\nIt is small in slowly varying regions and large near sharp boundaries. The forward propagation model can therefore be interpreted as the sum of an exit-surface absorption image and a propagation-induced edge term:\n\\[\nI_z=I_0-\\alpha\\nabla_\\perp^2I_0.\n\\]\nFor a step-like boundary, the second derivative changes sign across the edge. One side becomes brighter and the other darker. The observed bright–dark pair is not evidence of two physical boundaries; it is an intensity modulation generated by free-space propagation.",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#normalized-form-of-the-propagation-model",
+    "href": "propagation-phase-contrast.html#normalized-form-of-the-propagation-model",
+    "title": "Propagation-based Phase Contrast",
+    "section": "Normalized Form of the Propagation Model",
+    "text": "Normalized Form of the Propagation Model\nDefine the normalized exit-surface and propagated intensities:\n\\[\nf(x,y)=\\frac{I_0(x,y)}{I_{\\mathrm{in}}(x,y)},\n\\qquad\ng(x,y)=\\frac{I_z(x,y)}{I_{\\mathrm{in}}(x,y)}.\n\\]\nExperimentally, \\(g\\) is obtained through dark-field and flat-field correction:\n\\[\n\\boxed{\ng(x,y)\n=\n\\frac{P(x,y)-D(x,y)}\n{F(x,y)-D(x,y)}\n},\n\\]\nwhere \\(P\\) is the sample projection, \\(D\\) is the dark-field image, and \\(F\\) is the flat-field image.\nIf the incident intensity is locally uniform,\n\\[\n\\boxed{\ng\n=\n\\left(1-\\alpha\\nabla_\\perp^2\\right)f\n}.\n\\]\nThe measured quantity is \\(g\\), while the desired exit-surface intensity is \\(f\\). Phase retrieval is therefore the inverse problem \\(g\\rightarrow f\\).",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#solving-the-inverse-problem-in-the-fourier-domain",
+    "href": "propagation-phase-contrast.html#solving-the-inverse-problem-in-the-fourier-domain",
+    "title": "Propagation-based Phase Contrast",
+    "section": "Solving the Inverse Problem in the Fourier Domain",
+    "text": "Solving the Inverse Problem in the Fourier Domain\nLet\n\\[\n\\widehat{f}(q_x,q_y)=\\mathcal{F}\\{f(x,y)\\},\n\\]\nwhere \\(q_x\\) and \\(q_y\\) are angular spatial frequencies in \\(\\mathrm{rad/m}\\). The Fourier derivative properties are\n\\[\n\\mathcal{F}\n\\left\\{\n\\frac{\\partial^2f}{\\partial x^2}\n\\right\\}\n=-q_x^2\\widehat{f},\n\\qquad\n\\mathcal{F}\n\\left\\{\n\\frac{\\partial^2f}{\\partial y^2}\n\\right\\}\n=-q_y^2\\widehat{f}.\n\\]\nTherefore,\n\\[\n\\mathcal{F}\\{\\nabla_\\perp^2f\\}\n=\n-\\left(q_x^2+q_y^2\\right)\\widehat{f}.\n\\]\nTaking the Fourier transform of the normalized forward model gives\n\\[\n\\widehat{g}\n=\n\\left[\n1+\\alpha\\left(q_x^2+q_y^2\\right)\n\\right]\\widehat{f}.\n\\]\nSolving for \\(\\widehat{f}\\),\n\\[\n\\boxed{\n\\widehat{f}\n=\n\\frac{\\widehat{g}}\n{1+\\alpha(q_x^2+q_y^2)}\n}.\n\\]\nThe inverse transform gives\n\\[\n\\boxed{\nf(x,y)\n=\n\\mathcal{F}^{-1}\n\\left[\n\\frac{\\mathcal{F}\\{g(x,y)\\}}\n{1+\\alpha(q_x^2+q_y^2)}\n\\right]\n}.\n\\]\nSubstituting the definition of \\(\\alpha\\) produces the single-distance PAD phase-retrieval formula:\n\\[\n\\boxed{\nf(x,y)\n=\n\\mathcal{F}^{-1}\n\\left[\n\\frac{\\mathcal{F}\\{g(x,y)\\}}\n{\n1+\n\\displaystyle\n\\frac{\\lambda z}{4\\pi}\n\\frac{\\delta}{\\beta}\n(q_x^2+q_y^2)\n}\n\\right]\n}.\n\\]",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#alternative-formula-using-cycles-per-unit-length",
+    "href": "propagation-phase-contrast.html#alternative-formula-using-cycles-per-unit-length",
+    "title": "Propagation-based Phase Contrast",
+    "section": "Alternative Formula Using Cycles per Unit Length",
+    "text": "Alternative Formula Using Cycles per Unit Length\nSome papers use ordinary spatial frequencies \\(u\\) and \\(v\\) in \\(\\mathrm{cycles/m}\\). The two conventions are related by\n\\[\nq_x=2\\pi u,\n\\qquad\nq_y=2\\pi v.\n\\]\nHence,\n\\[\nq_x^2+q_y^2=4\\pi^2(u^2+v^2),\n\\]\nand the denominator in the angular-frequency formula becomes\n\\[\n\\boxed{\n1+\n\\pi\\lambda z\n\\frac{\\delta}{\\beta}\n(u^2+v^2)\n}.\n\\]\nThe retrieval formula is therefore\n\\[\n\\boxed{\nf(x,y)\n=\n\\mathcal{F}^{-1}\n\\left[\n\\frac{\\mathcal{F}\\{g(x,y)\\}}\n{\n1+\n\\pi\\lambda z\n\\displaystyle\\frac{\\delta}{\\beta}\n(u^2+v^2)\n}\n\\right]\n}.\n\\]\nThe angular-frequency and ordinary-frequency formulas are physically identical. Their apparent difference arises only from the Fourier-transform convention and spatial-frequency definition.",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#recovering-the-absorption-projection",
+    "href": "propagation-phase-contrast.html#recovering-the-absorption-projection",
+    "title": "Propagation-based Phase Contrast",
+    "section": "Recovering the Absorption Projection",
+    "text": "Recovering the Absorption Projection\nAfter phase retrieval,\n\\[\nf(x,y)=\\frac{I_0(x,y)}{I_{\\mathrm{in}}(x,y)}.\n\\]\nFrom the Beer–Lambert law, \\(f=e^{-p}\\), where\n\\[\np(x,y)=\\int_L\\mu(x,y,\\ell)\\,\\mathrm{d}\\ell.\n\\]\nTherefore,\n\\[\n\\boxed{p(x,y)=-\\ln f(x,y)}.\n\\]\nFor a homogeneous material with projected thickness \\(t(x,y)\\),\n\\[\n\\boxed{\nt(x,y)=-\\frac{1}{\\mu}\\ln f(x,y)\n},\n\\qquad\n\\mu=\\frac{4\\pi\\beta}{\\lambda}.\n\\]\nThe phase projection can also be recovered:\n\\[\n\\boxed{\n\\phi(x,y)\n=\n\\frac{\\delta}{2\\beta}\\ln f(x,y)\n}.\n\\]\n\n\n\n\n\n\nWarningCheck the software output definition\n\n\n\nA practical phase-retrieval package may output the retrieved exit-surface intensity \\(f\\), attenuation projection \\(p\\), projected thickness \\(t\\), or projected phase \\(\\phi\\). Confirm the definition before applying an additional logarithmic transformation.",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#complete-single-distance-processing-formula",
+    "href": "propagation-phase-contrast.html#complete-single-distance-processing-formula",
+    "title": "Propagation-based Phase Contrast",
+    "section": "Complete Single-Distance Processing Formula",
+    "text": "Complete Single-Distance Processing Formula\nFor each projection angle \\(\\theta\\), first normalize the raw image:\n\\[\ng_\\theta(x,y)\n=\n\\frac{P_\\theta(x,y)-D(x,y)}\n{F(x,y)-D(x,y)}.\n\\]\nRetrieve the exit-surface intensity:\n\\[\nf_\\theta(x,y)\n=\n\\mathcal{F}^{-1}\n\\left[\n\\frac{\\mathcal{F}\\{g_\\theta(x,y)\\}}\n{\n1+\n\\displaystyle\n\\frac{\\lambda z}{4\\pi}\n\\frac{\\delta}{\\beta}\n(q_x^2+q_y^2)\n}\n\\right].\n\\]\nThen calculate the attenuation projection:\n\\[\np_\\theta(x,y)=-\\ln f_\\theta(x,y).\n\\]\nFor a selected detector row, arrange the projections over all rotation angles into a sinogram \\(p(\\theta,s)\\) and reconstruct the attenuation distribution using filtered backprojection or an iterative method:\n\\[\np(\\theta,s)\\longrightarrow\\mu(x,y).\n\\]\nThe complete processing chain is\n\\[\n\\boxed{\nP_\\theta\n\\rightarrow\ng_\\theta\n\\rightarrow\nf_\\theta\n\\rightarrow\np_\\theta\n\\rightarrow\np(\\theta,s)\n\\rightarrow\n\\mu(x,y)\n}.\n\\]",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#why-the-retrieval-operator-is-a-low-pass-filter",
+    "href": "propagation-phase-contrast.html#why-the-retrieval-operator-is-a-low-pass-filter",
+    "title": "Propagation-based Phase Contrast",
+    "section": "Why the Retrieval Operator Is a Low-Pass Filter",
+    "text": "Why the Retrieval Operator Is a Low-Pass Filter\nThe Fourier-domain transfer function is\n\\[\n\\boxed{\nH(q_x,q_y)\n=\n\\frac{1}{1+\\alpha(q_x^2+q_y^2)}\n}.\n\\]\nAt zero spatial frequency, \\(H(0,0)=1\\), so the direct-current component and slowly varying information are preserved. At high spatial frequency,\n\\[\nq_x^2+q_y^2\\rightarrow\\infty\n\\quad\\Rightarrow\\quad\nH(q_x,q_y)\\rightarrow0,\n\\]\nso high-frequency components are suppressed.\nIt is important to distinguish the forward propagation operator from the phase-retrieval operator. Forward propagation is\n\\[\n\\widehat{g}\n=\n\\left[\n1+\\alpha(q_x^2+q_y^2)\n\\right]\\widehat{f},\n\\]\nwhich enhances high spatial frequencies and generates sharp bright–dark fringes. Phase retrieval applies the inverse:\n\\[\n\\widehat{f}\n=\n\\frac{\\widehat{g}}\n{1+\\alpha(q_x^2+q_y^2)}.\n\\]\nThe smoothing is therefore not an arbitrary image-processing operation. It follows from inversion of the physical propagation model.",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#influence-of-lambda-z-and-deltabeta",
+    "href": "propagation-phase-contrast.html#influence-of-lambda-z-and-deltabeta",
+    "title": "Propagation-based Phase Contrast",
+    "section": "Influence of \\(\\lambda\\), \\(z\\), and \\(\\delta/\\beta\\)",
+    "text": "Influence of \\(\\lambda\\), \\(z\\), and \\(\\delta/\\beta\\)\nThe retrieval strength is controlled by\n\\[\n\\alpha\n=\n\\frac{\\lambda z}{4\\pi}\n\\frac{\\delta}{\\beta},\n\\]\nso\n\\[\n\\alpha\\propto\\lambda,\n\\qquad\n\\alpha\\propto z,\n\\qquad\n\\alpha\\propto\\frac{\\delta}{\\beta}.\n\\]\n\nPropagation Distance \\(z\\)\nIncreasing \\(z\\) increases \\(\\alpha\\) and strengthens the retrieval filter. Typical consequences are:\n\nstronger suppression of phase fringes;\nreduced image noise;\nsmoother homogeneous regions;\nincreased loss of high-frequency detail.\n\nIf the value used in the algorithm is smaller than the true distance, residual phase fringes may remain. If it is too large, thin walls, small pores, and fine cracks may be excessively blurred.\n\n\nRatio \\(\\delta/\\beta\\)\nIncreasing \\(\\delta/\\beta\\) makes the algorithm assume a stronger phase effect relative to absorption and applies a stronger correction.\nIf \\(\\delta/\\beta\\) is too small:\n\nthe bright–dark edge pair may not be fully removed;\nresidual halos may remain;\nreconstructed slices may contain false boundary structures.\n\nIf \\(\\delta/\\beta\\) is too large:\n\nnoise is strongly reduced;\nboundaries become broader;\nsmall pores and cracks may disappear;\nspatial resolution is degraded.\n\nThe ratio therefore controls the trade-off between fringe suppression and spatial-resolution preservation.\n\n\nX-Ray Wavelength \\(\\lambda\\)\nSince\n\\[\n\\lambda=\\frac{hc}{E},\n\\]\na higher photon energy corresponds to a shorter wavelength. However,\n\\[\n\\delta=\\delta(E),\n\\qquad\n\\beta=\\beta(E),\n\\]\nso the energy dependence of phase retrieval cannot be determined from \\(\\lambda\\) alone. The correct \\(\\delta(E)\\) and \\(\\beta(E)\\) values must be used for the selected X-ray energy.",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#assumptions-required-by-the-derivation",
+    "href": "propagation-phase-contrast.html#assumptions-required-by-the-derivation",
+    "title": "Propagation-based Phase Contrast",
+    "section": "Assumptions Required by the Derivation",
+    "text": "Assumptions Required by the Derivation\n\nMonochromatic or Narrow-Band X-Rays\nThe derivation uses a single set of parameters \\(\\lambda\\), \\(\\delta\\), and \\(\\beta\\). A broad polychromatic spectrum contains energy-dependent wavelengths and refractive-index parameters, so a rigorous model requires integration over energy. Monochromatic synchrotron radiation is particularly suitable for this method.\n\n\nHomogeneous Material or Constant \\(\\delta/\\beta\\)\nThe central assumption is\n\\[\n\\frac{\\delta(\\boldsymbol{r})}{\\beta(\\boldsymbol{r})}\n\\approx\\text{constant}.\n\\]\nThis is approximately valid for an object dominated by one material. For a strongly multi-material object, one value of \\(\\delta/\\beta\\) may restore one interface correctly while over-smoothing or under-correcting another.\n\n\nParaxial Propagation\nThe wavefield must propagate mainly along the optical axis with small transverse angles. Large-angle scattering and strong multiple scattering are not represented.\n\n\nNear-Field or First-Order Propagation\nThe single-distance model uses\n\\[\nI_z\n\\approx\nI_0+z\\frac{\\partial I}{\\partial z}.\n\\]\nIt is most appropriate in the near-field regime. When the propagation distance is large enough to produce complicated Fresnel fringes, the first-order TIE model may no longer be accurate.\n\n\nProjection Approximation\nThe derivation assumes approximately straight X-ray paths and represents the object by projected \\(\\delta\\) and \\(\\beta\\). Strong diffraction, refraction-induced ray bending, and multiple scattering may violate this approximation.",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
+    ]
+  },
+  {
+    "objectID": "propagation-phase-contrast.html#mathematical-meaning-of-pad-in-the-processing-workflow",
+    "href": "propagation-phase-contrast.html#mathematical-meaning-of-pad-in-the-processing-workflow",
+    "title": "Propagation-based Phase Contrast",
+    "section": "Mathematical Meaning of PAD in the Processing Workflow",
+    "text": "Mathematical Meaning of PAD in the Processing Workflow\nThe essential PAD assumption is\n\\[\n\\boxed{\n\\frac{\\delta}{\\beta}\\approx\\text{constant}\n}.\n\\]\nIt produces the phase–attenuation relation\n\\[\n\\boxed{\n\\phi=-\\frac{\\delta}{2\\beta}p\n}.\n\\]\nCombining this relation with the TIE gives\n\\[\n\\boxed{\ng=\\left(1-\\alpha\\nabla_\\perp^2\\right)f\n},\n\\qquad\n\\boxed{\n\\alpha\n=\n\\frac{\\lambda z}{4\\pi}\n\\frac{\\delta}{\\beta}\n}.\n\\]\nFourier-domain inversion gives\n\\[\n\\boxed{\nf\n=\n\\mathcal{F}^{-1}\n\\left[\n\\frac{\\mathcal{F}\\{g\\}}\n{1+\\alpha(q_x^2+q_y^2)}\n\\right]\n},\n\\qquad\n\\boxed{p=-\\ln f}.\n\\]\nThe derivation can be summarized as\n\\[\n\\boxed{\nn=1-\\delta+i\\beta\n\\;\\Longrightarrow\\;\n\\phi=-\\frac{\\delta}{2\\beta}p\n\\;\\xRightarrow{\\mathrm{TIE}}\\;\ng=(1-\\alpha\\nabla_\\perp^2)f\n\\;\\xRightarrow{\\mathcal{F}^{-1}}\\;\nf,\\;p\n}.\n\\]\nThis is the mathematical basis for converting a propagation-based phase-contrast projection into an attenuation projection suitable for conventional CT reconstruction.",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "专题 · 相衬成像",
+      "Propagation Phase Contrast"
     ]
   },
   {
