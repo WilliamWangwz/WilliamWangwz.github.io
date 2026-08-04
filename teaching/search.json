@@ -1,0 +1,634 @@
+[
+  {
+    "objectID": "roadmap.html",
+    "href": "roadmap.html",
+    "title": "后续课程路线",
+    "section": "",
+    "text": "扇束几何、等角采样与等距采样\n扇束投影重排与加权反投影\n短扫描与 Parker 权重\n锥束几何与圆轨道数据完整性\nFDK 算法的推导、近似条件与实现",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "学习与拓展",
+      "后续课程路线"
+    ]
+  },
+  {
+    "objectID": "roadmap.html#第二阶段-扫描几何扩展",
+    "href": "roadmap.html#第二阶段-扫描几何扩展",
+    "title": "后续课程路线",
+    "section": "",
+    "text": "扇束几何、等角采样与等距采样\n扇束投影重排与加权反投影\n短扫描与 Parker 权重\n锥束几何与圆轨道数据完整性\nFDK 算法的推导、近似条件与实现",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "学习与拓展",
+      "后续课程路线"
+    ]
+  },
+  {
+    "objectID": "roadmap.html#第三阶段-离散与迭代重构",
+    "href": "roadmap.html#第三阶段-离散与迭代重构",
+    "title": "后续课程路线",
+    "section": "2 第三阶段 · 离散与迭代重构",
+    "text": "2 第三阶段 · 离散与迭代重构\n\n系统矩阵 \\(\\boldsymbol{A}\\) 的构建\n射线驱动、像素驱动与距离驱动投影器\nART、SIRT、SART 与共轭梯度方法\nTikhonov、TV 和稀疏正则化\n统计噪声模型和约束优化",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "学习与拓展",
+      "后续课程路线"
+    ]
+  },
+  {
+    "objectID": "roadmap.html#第四阶段-成像物理与校正",
+    "href": "roadmap.html#第四阶段-成像物理与校正",
+    "title": "后续课程路线",
+    "section": "3 第四阶段 · 成像物理与校正",
+    "text": "3 第四阶段 · 成像物理与校正\n\n多能谱正投影和束硬化校正\n散射建模与校正\n探测器模糊、点扩散函数和 MTF\n环状伪影与坏点修复\n运动伪影和几何标定误差",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "学习与拓展",
+      "后续课程路线"
+    ]
+  },
+  {
+    "objectID": "roadmap.html#第五阶段-深度学习图像处理",
+    "href": "roadmap.html#第五阶段-深度学习图像处理",
+    "title": "后续课程路线",
+    "section": "4 第五阶段 · 深度学习图像处理",
+    "text": "4 第五阶段 · 深度学习图像处理\n\n图像域去噪与伪影抑制\n正弦图修复和投影域学习\n展开网络与数据一致性\n自监督、弱监督和仿真数据域差异\n不确定性、泛化与定量评价",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "学习与拓展",
+      "后续课程路线"
+    ]
+  },
+  {
+    "objectID": "roadmap.html#与-xrayforge-的连接",
+    "href": "roadmap.html#与-xrayforge-的连接",
+    "title": "后续课程路线",
+    "section": "5 与 XRayForge 的连接",
+    "text": "5 与 XRayForge 的连接\n教学站点将使用 XRayForge 输出的材料、能谱、几何和探测器仿真数据构造可复现实验，使“物理模型 → 投影数据 → 重构算法 → 图像评价”形成闭环。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "学习与拓展",
+      "后续课程路线"
+    ]
+  },
+  {
+    "objectID": "radon-transform.html",
+    "href": "radon-transform.html",
+    "title": "Radon 变换与正弦图",
+    "section": "",
+    "text": "利用 平行束扫描几何 中的射线参数，二维函数 \\(f(x,y)\\) 的 Radon 变换定义为\n\\[\np_\\theta(s)\n=\\mathcal{R}f(\\theta,s)\n=\\int_{-\\infty}^{\\infty}\nf\\!\\left(\ns\\cos\\theta-t\\sin\\theta,\ns\\sin\\theta+t\\cos\\theta\n\\right)\\,\\mathrm{d}t.\n\\tag{1}\\]\n也可以使用 Dirac \\(\\delta\\) 函数写成\n\\[\n\\mathcal{R}f(\\theta,s)\n=\\int_{\\mathbb{R}^2}\nf(x,y)\\,\n\\delta\\!\\left(s-x\\cos\\theta-y\\sin\\theta\\right)\n\\,\\mathrm{d}x\\,\\mathrm{d}y.\n\\tag{2}\\]\n式 2 清楚地表达了“对满足直线约束的所有像素积分”。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第一部分 · CT 基础",
+      "03 Radon 变换与正弦图"
+    ]
+  },
+  {
+    "objectID": "radon-transform.html#radon-变换",
+    "href": "radon-transform.html#radon-变换",
+    "title": "Radon 变换与正弦图",
+    "section": "",
+    "text": "利用 平行束扫描几何 中的射线参数，二维函数 \\(f(x,y)\\) 的 Radon 变换定义为\n\\[\np_\\theta(s)\n=\\mathcal{R}f(\\theta,s)\n=\\int_{-\\infty}^{\\infty}\nf\\!\\left(\ns\\cos\\theta-t\\sin\\theta,\ns\\sin\\theta+t\\cos\\theta\n\\right)\\,\\mathrm{d}t.\n\\tag{1}\\]\n也可以使用 Dirac \\(\\delta\\) 函数写成\n\\[\n\\mathcal{R}f(\\theta,s)\n=\\int_{\\mathbb{R}^2}\nf(x,y)\\,\n\\delta\\!\\left(s-x\\cos\\theta-y\\sin\\theta\\right)\n\\,\\mathrm{d}x\\,\\mathrm{d}y.\n\\tag{2}\\]\n式 2 清楚地表达了“对满足直线约束的所有像素积分”。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第一部分 · CT 基础",
+      "03 Radon 变换与正弦图"
+    ]
+  },
+  {
+    "objectID": "radon-transform.html#点目标为什么形成正弦曲线",
+    "href": "radon-transform.html#点目标为什么形成正弦曲线",
+    "title": "Radon 变换与正弦图",
+    "section": "2 点目标为什么形成正弦曲线",
+    "text": "2 点目标为什么形成正弦曲线\n设物体中只有一个位于 \\((x_0,y_0)\\) 的单位点，则其投影位置满足\n\\[\ns(\\theta)=x_0\\cos\\theta+y_0\\sin\\theta.\n\\tag{3}\\]\n将点写成极坐标 \\(x_0=r\\cos\\varphi\\)、\\(y_0=r\\sin\\varphi\\)，可得\n\\[\ns(\\theta)=r\\cos(\\theta-\\varphi).\n\\tag{4}\\]\n因此，一个离旋转中心越远的点，在正弦图中的振幅越大；物体中所有点的轨迹叠加后形成完整正弦图。\n\n\n\n\n\n\n提示直观理解\n\n\n\n正弦图的横轴通常是投影角 \\(\\theta\\)，纵轴是探测器位置 \\(s\\)，像素强度是该射线的衰减积分。它不是物体的照片，而是物体在“直线空间”中的表示。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第一部分 · CT 基础",
+      "03 Radon 变换与正弦图"
+    ]
+  },
+  {
+    "objectID": "radon-transform.html#radon-变换的基本性质",
+    "href": "radon-transform.html#radon-变换的基本性质",
+    "title": "Radon 变换与正弦图",
+    "section": "3 Radon 变换的基本性质",
+    "text": "3 Radon 变换的基本性质\n线性性：\n\\[\n\\mathcal{R}(a f+b g)\n=a\\mathcal{R}f+b\\mathcal{R}g.\n\\tag{5}\\]\n角度冗余：\n\\[\n\\mathcal{R}f(\\theta+\\pi,s)\n=\\mathcal{R}f(\\theta,-s).\n\\tag{6}\\]\n平移会使正弦图发生角度相关位移。若 \\(g(\\boldsymbol{x})=f(\\boldsymbol{x}-\\boldsymbol{x}_0)\\)，则\n\\[\n\\mathcal{R}g(\\theta,s)\n=\\mathcal{R}f\\left(\\theta,s-\\boldsymbol{x}_0\\cdot\\boldsymbol{n}_\\theta\\right).\n\\tag{7}\\]",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第一部分 · CT 基础",
+      "03 Radon 变换与正弦图"
+    ]
+  },
+  {
+    "objectID": "radon-transform.html#从投影到重构",
+    "href": "radon-transform.html#从投影到重构",
+    "title": "Radon 变换与正弦图",
+    "section": "4 从投影到重构",
+    "text": "4 从投影到重构\nRadon 变换解决正问题：已知 \\(f\\) 求 \\(p_\\theta\\)。CT 重构解决逆问题：已知有限、离散且含噪的 \\(p_\\theta\\)，估计 \\(f\\)。下一节先考察简单反投影，再通过傅里叶切片定理得到 滤波反投影。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第一部分 · CT 基础",
+      "03 Radon 变换与正弦图"
+    ]
+  },
+  {
+    "objectID": "numerical-experiments.html",
+    "href": "numerical-experiments.html",
+    "title": "Python 数值实验",
+    "section": "",
+    "text": "本节使用 NumPy、Matplotlib 和 scikit-image。代码在构建网站时执行，输出图像会直接嵌入静态网页。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "05 Python 数值实验"
+    ]
+  },
+  {
+    "objectID": "numerical-experiments.html#实验环境",
+    "href": "numerical-experiments.html#实验环境",
+    "title": "Python 数值实验",
+    "section": "",
+    "text": "本节使用 NumPy、Matplotlib 和 scikit-image。代码在构建网站时执行，输出图像会直接嵌入静态网页。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "05 Python 数值实验"
+    ]
+  },
+  {
+    "objectID": "numerical-experiments.html#生成-phantom-与正弦图",
+    "href": "numerical-experiments.html#生成-phantom-与正弦图",
+    "title": "Python 数值实验",
+    "section": "2 生成 Phantom 与正弦图",
+    "text": "2 生成 Phantom 与正弦图\n\n代码\nimage = resize(shepp_logan_phantom(), (256, 256), anti_aliasing=True)\ntheta = np.linspace(0.0, 180.0, max(image.shape), endpoint=False)\nsinogram = radon(image, theta=theta, circle=True)\n\nfig, axes = plt.subplots(1, 2, figsize=(10, 4))\naxes[0].imshow(image, cmap=\"gray\")\naxes[0].set_title(\"Phantom\")\naxes[0].axis(\"off\")\naxes[1].imshow(\n    sinogram,\n    cmap=\"gray\",\n    aspect=\"auto\",\n    extent=(theta.min(), theta.max(), sinogram.shape[0], 0),\n)\naxes[1].set_title(\"Sinogram\")\naxes[1].set_xlabel(r\"Projection angle $\\theta$ (degree)\")\naxes[1].set_ylabel(r\"Detector coordinate $s$\")\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\n\n图 1: 二维衰减系数分布\n\n\n\n\n\nShepp-Logan Phantom 及其平行束正弦图。\n\n\n\n图 1 展示了二维物体与投影空间之间的映射。椭圆边界在正弦图中表现为相互交叠的周期轨迹。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "05 Python 数值实验"
+    ]
+  },
+  {
+    "objectID": "numerical-experiments.html#简单反投影与-fbp",
+    "href": "numerical-experiments.html#简单反投影与-fbp",
+    "title": "Python 数值实验",
+    "section": "3 简单反投影与 FBP",
+    "text": "3 简单反投影与 FBP\n\n\n代码\nbackprojection = iradon(\n    sinogram,\n    theta=theta,\n    filter_name=None,\n    circle=True,\n)\nfbp = iradon(\n    sinogram,\n    theta=theta,\n    filter_name=\"ramp\",\n    circle=True,\n)\n\nfig, axes = plt.subplots(1, 3, figsize=(12, 4))\nfor ax, data, title in zip(\n    axes,\n    [image, backprojection, fbp],\n    [\"Reference\", \"Backprojection\", \"Filtered backprojection\"],\n):\n    ax.imshow(data, cmap=\"gray\")\n    ax.set_title(title)\n    ax.axis(\"off\")\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n图 2: 未滤波反投影与 Ramp 滤波反投影的比较。\n\n\n\n\n\n简单反投影在整个图像中形成低频拖尾；Ramp 滤波补偿频域采样密度后，边界和内部结构被恢复。这与 极坐标雅可比和 FBP 公式 的推导一致。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "05 Python 数值实验"
+    ]
+  },
+  {
+    "objectID": "numerical-experiments.html#定量误差",
+    "href": "numerical-experiments.html#定量误差",
+    "title": "Python 数值实验",
+    "section": "4 定量误差",
+    "text": "4 定量误差\n\n\n代码\nmse_backprojection = np.mean((image - backprojection) ** 2)\nmse_fbp = np.mean((image - fbp) ** 2)\n\nprint(f\"Backprojection MSE: {mse_backprojection:.6f}\")\nprint(f\"FBP MSE:            {mse_fbp:.6f}\")\n\n\nBackprojection MSE: 2458.159556\nFBP MSE:            0.000802\n\n\n\n\n\n\n\n\n注记实现说明\n\n\n\n库函数内部包含离散滤波、插值和尺度归一化。后续可以新增“从零实现 FBP”章节，把 FFT 频率轴、零填充、Ramp 核和角度权重逐项展开。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "05 Python 数值实验"
+    ]
+  },
+  {
+    "objectID": "filtered-backprojection.html",
+    "href": "filtered-backprojection.html",
+    "title": "滤波反投影",
+    "section": "",
+    "text": "反投影算子把投影值沿原射线路径均匀“涂回”图像：\n\\[\n\\mathcal{B}p(x,y)\n=\\int_0^\\pi\np_\\theta(x\\cos\\theta+y\\sin\\theta)\n\\,\\mathrm{d}\\theta.\n\\tag{1}\\]\n简单反投影能够形成物体轮廓，但结果会出现明显的 \\(1/r\\) 型模糊。原因是低频成分在极坐标频域中被过度累积。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "04 滤波反投影"
+    ]
+  },
+  {
+    "objectID": "filtered-backprojection.html#简单反投影",
+    "href": "filtered-backprojection.html#简单反投影",
+    "title": "滤波反投影",
+    "section": "",
+    "text": "反投影算子把投影值沿原射线路径均匀“涂回”图像：\n\\[\n\\mathcal{B}p(x,y)\n=\\int_0^\\pi\np_\\theta(x\\cos\\theta+y\\sin\\theta)\n\\,\\mathrm{d}\\theta.\n\\tag{1}\\]\n简单反投影能够形成物体轮廓，但结果会出现明显的 \\(1/r\\) 型模糊。原因是低频成分在极坐标频域中被过度累积。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "04 滤波反投影"
+    ]
+  },
+  {
+    "objectID": "filtered-backprojection.html#一维投影傅里叶变换",
+    "href": "filtered-backprojection.html#一维投影傅里叶变换",
+    "title": "滤波反投影",
+    "section": "2 一维投影傅里叶变换",
+    "text": "2 一维投影傅里叶变换\n定义投影关于 \\(s\\) 的一维傅里叶变换\n\\[\nP_\\theta(\\omega)\n=\\int_{-\\infty}^{\\infty}\np_\\theta(s)e^{-i2\\pi\\omega s}\\,\\mathrm{d}s.\n\\tag{2}\\]\n二维物体的傅里叶变换为\n\\[\nF(u,v)\n=\\int_{\\mathbb{R}^2}\nf(x,y)e^{-i2\\pi(ux+vy)}\\,\\mathrm{d}x\\,\\mathrm{d}y.\n\\tag{3}\\]\n\n定理 1 (傅里叶切片定理) 投影 \\(p_\\theta(s)\\) 的一维傅里叶变换，等于二维物体频谱 \\(F(u,v)\\) 沿角度 \\(\\theta\\)、通过原点的一条径向切片：\n\\[\nP_\\theta(\\omega)\n=F(\\omega\\cos\\theta,\\omega\\sin\\theta).\n\\tag{4}\\]",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "04 滤波反投影"
+    ]
+  },
+  {
+    "objectID": "filtered-backprojection.html#逆变换与-ramp-滤波",
+    "href": "filtered-backprojection.html#逆变换与-ramp-滤波",
+    "title": "滤波反投影",
+    "section": "3 逆变换与 Ramp 滤波",
+    "text": "3 逆变换与 Ramp 滤波\n将二维逆傅里叶积分转换到极坐标频域，面积元满足\n\\[\n\\mathrm{d}u\\,\\mathrm{d}v\n=|\\omega|\\,\\mathrm{d}\\omega\\,\\mathrm{d}\\theta.\n\\tag{5}\\]\n其中雅可比因子 \\(|\\omega|\\) 正是 Ramp 滤波器。定义滤波投影\n\\[\nq_\\theta(s)\n=\\mathcal{F}^{-1}\n\\left\\{\n|\\omega|P_\\theta(\\omega)\n\\right\\}(s),\n\\tag{6}\\]\n则二维物体可写为\n\\[\nf(x,y)\n=\\int_0^\\pi\nq_\\theta(x\\cos\\theta+y\\sin\\theta)\n\\,\\mathrm{d}\\theta.\n\\tag{7}\\]\n式 7 就是平行束滤波反投影公式。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "04 滤波反投影"
+    ]
+  },
+  {
+    "objectID": "filtered-backprojection.html#窗函数滤波器",
+    "href": "filtered-backprojection.html#窗函数滤波器",
+    "title": "滤波反投影",
+    "section": "4 窗函数滤波器",
+    "text": "4 窗函数滤波器\n理想 Ramp 滤波器增强高频，也会放大噪声。实践中常使用\n\\[\nH(\\omega)=|\\omega|W(\\omega),\n\\tag{8}\\]\n其中 \\(W(\\omega)\\) 可以是 Shepp–Logan、Cosine、Hamming 或 Hann 窗。窗口越强，高频噪声越低，但空间分辨率也会下降。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "04 滤波反投影"
+    ]
+  },
+  {
+    "objectID": "filtered-backprojection.html#离散算法",
+    "href": "filtered-backprojection.html#离散算法",
+    "title": "滤波反投影",
+    "section": "5 离散算法",
+    "text": "5 离散算法\n对每个角度 \\(\\theta_k\\)：\n\n对离散投影 \\(p_k[m]\\) 做一维 FFT；\n乘以离散 Ramp 或窗化 Ramp；\n做逆 FFT 得到 \\(q_k[m]\\)；\n对每个重构像素计算 \\(s=x\\cos\\theta_k+y\\sin\\theta_k\\)；\n在探测器坐标上插值 \\(q_k(s)\\) 并对所有角度累加。\n\n离散近似通常写为\n\\[\nf[i,j]\n\\approx\n\\Delta\\theta\n\\sum_{k=0}^{N_\\theta-1}\nq_k\\!\\left(x_i\\cos\\theta_k+y_j\\sin\\theta_k\\right).\n\\tag{9}\\]\n下一节通过可运行的 Python 数值实验 比较反投影与 FBP。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "04 滤波反投影"
+    ]
+  },
+  {
+    "objectID": "ct-foundations.html",
+    "href": "ct-foundations.html",
+    "title": "成像物理基础",
+    "section": "",
+    "text": "完成本节后，读者应能解释：\n\n为什么 CT 原始强度需要进行负对数变换；\n线性衰减系数 \\(\\mu(\\boldsymbol{x},E)\\) 的物理意义；\n单能模型与多能谱模型之间的差别；\n暗场、平场和散射误差如何进入投影数据。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第一部分 · CT 基础",
+      "01 成像物理基础"
+    ]
+  },
+  {
+    "objectID": "ct-foundations.html#学习目标",
+    "href": "ct-foundations.html#学习目标",
+    "title": "成像物理基础",
+    "section": "",
+    "text": "完成本节后，读者应能解释：\n\n为什么 CT 原始强度需要进行负对数变换；\n线性衰减系数 \\(\\mu(\\boldsymbol{x},E)\\) 的物理意义；\n单能模型与多能谱模型之间的差别；\n暗场、平场和散射误差如何进入投影数据。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第一部分 · CT 基础",
+      "01 成像物理基础"
+    ]
+  },
+  {
+    "objectID": "ct-foundations.html#单色-x-射线衰减",
+    "href": "ct-foundations.html#单色-x-射线衰减",
+    "title": "成像物理基础",
+    "section": "2 单色 X 射线衰减",
+    "text": "2 单色 X 射线衰减\n\n定义 1 (线性衰减系数) \\(\\mu(\\boldsymbol{x})\\) 表示单位路径长度上的相对强度损失，其量纲通常为 \\(\\mathrm{mm}^{-1}\\) 或 \\(\\mathrm{cm}^{-1}\\)。\n\n对于沿射线 \\(L\\) 传播的单能 X 射线，Beer–Lambert 定律写为\n\\[\nI = I_0\\exp\\left[-\\int_L \\mu(\\boldsymbol{x})\\,\\mathrm{d}\\ell\\right].\n\\tag{1}\\]\n对 式 1 两侧取负对数，得到\n\\[\np_L\n=-\\ln\\frac{I}{I_0}\n=\\int_L \\mu(\\boldsymbol{x})\\,\\mathrm{d}\\ell.\n\\tag{2}\\]\n式 2 是解析 CT 重构的关键：经过负对数变换后，测得的强度比被转化为衰减系数的线积分。\n\n\n\n\n\n\n重要模型条件\n\n\n\n式 2 假设单能谱、无散射、探测器线性且 \\(I_0\\) 已知。真实工业 CT 往往不完全满足这些条件，因此预处理和物理校正与重构算法同等重要。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第一部分 · CT 基础",
+      "01 成像物理基础"
+    ]
+  },
+  {
+    "objectID": "ct-foundations.html#探测器校正",
+    "href": "ct-foundations.html#探测器校正",
+    "title": "成像物理基础",
+    "section": "3 探测器校正",
+    "text": "3 探测器校正\n设暗场图像为 \\(D\\)，平场图像为 \\(F\\)，样品图像为 \\(R\\)，常用归一化为\n\\[\nT = \\frac{R-D}{F-D}, \\qquad p=-\\ln T.\n\\tag{3}\\]\n当 \\(R-D\\le 0\\) 或像素饱和时，直接使用 式 3 会产生无穷值或异常条纹。工程实现中应在对数前完成坏点修复、阈值截断和有效性标记。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第一部分 · CT 基础",
+      "01 成像物理基础"
+    ]
+  },
+  {
+    "objectID": "ct-foundations.html#多能谱模型",
+    "href": "ct-foundations.html#多能谱模型",
+    "title": "成像物理基础",
+    "section": "4 多能谱模型",
+    "text": "4 多能谱模型\n真实 X 射线源具有能谱 \\(S(E)\\)，探测器也具有能量响应 \\(\\eta(E)\\)。测量强度更接近\n\\[\nI\n=\\int S(E)\\eta(E)\n\\exp\\left[-\\int_L\\mu(\\boldsymbol{x},E)\\,\\mathrm{d}\\ell\\right]\n\\mathrm{d}E.\n\\tag{4}\\]\n由于能量积分位于指数函数之外，对 \\(I/I_0\\) 取对数后通常不再等价于某个固定 \\(\\mu\\) 的线积分。这是束硬化伪影产生的根本原因之一。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第一部分 · CT 基础",
+      "01 成像物理基础"
+    ]
+  },
+  {
+    "objectID": "ct-foundations.html#从物理到数学模型",
+    "href": "ct-foundations.html#从物理到数学模型",
+    "title": "成像物理基础",
+    "section": "5 从物理到数学模型",
+    "text": "5 从物理到数学模型\n在后续平行束章节中，我们首先采用理想单能模型，把 \\(f(x,y)\\) 视为二维衰减系数分布，并把 式 2 记为投影 \\(p_\\theta(s)\\)。完成解析推导后，再在 采样、噪声与伪影 中逐步放松这些条件。\n\n\n\n\n\n\n注记本节小结\n\n\n\nCT 并不是直接重构探测器强度，而是重构经过校正和负对数变换后的射线积分数据。物理模型决定了投影数据是否符合 Radon 变换假设。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第一部分 · CT 基础",
+      "01 成像物理基础"
+    ]
+  },
+  {
+    "objectID": "artifacts.html",
+    "href": "artifacts.html",
+    "title": "采样、噪声与伪影",
+    "section": "",
+    "text": "重构伪影可以按来源分为三类：\n\n\n\n类别\n典型原因\n常见表现\n\n\n\n\n采样问题\n角度过少、探测器间距过大\n放射状条纹、混叠、分辨率损失\n\n\n数据缺失\n有限角、截断、坏像素\n方向性模糊、边缘延伸、环状伪影\n\n\n模型失配\n多能谱、散射、运动\n杯状伪影、暗带、重影、定量偏差",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "06 采样、噪声与伪影"
+    ]
+  },
+  {
+    "objectID": "artifacts.html#伪影分类",
+    "href": "artifacts.html#伪影分类",
+    "title": "采样、噪声与伪影",
+    "section": "",
+    "text": "重构伪影可以按来源分为三类：\n\n\n\n类别\n典型原因\n常见表现\n\n\n\n\n采样问题\n角度过少、探测器间距过大\n放射状条纹、混叠、分辨率损失\n\n\n数据缺失\n有限角、截断、坏像素\n方向性模糊、边缘延伸、环状伪影\n\n\n模型失配\n多能谱、散射、运动\n杯状伪影、暗带、重影、定量偏差",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "06 采样、噪声与伪影"
+    ]
+  },
+  {
+    "objectID": "artifacts.html#角度欠采样",
+    "href": "artifacts.html#角度欠采样",
+    "title": "采样、噪声与伪影",
+    "section": "2 角度欠采样",
+    "text": "2 角度欠采样\n当投影角数量不足时，反投影路径无法在图像域均匀覆盖，强边缘会产生星状条纹。经验上，直径为 \\(N\\) 个像素的圆形视野通常需要数量级为\n\\[\nN_\\theta \\gtrsim \\frac{\\pi}{2}N\n\\tag{1}\\]\n的独立角度，才能使角向采样与探测器采样大致匹配。式 1 是工程估计而非对所有物体都严格成立的定理。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "06 采样、噪声与伪影"
+    ]
+  },
+  {
+    "objectID": "artifacts.html#有限角问题",
+    "href": "artifacts.html#有限角问题",
+    "title": "采样、噪声与伪影",
+    "section": "3 有限角问题",
+    "text": "3 有限角问题\n如果只采集 \\(\\theta\\in[\\theta_0,\\theta_1]\\) 且角度范围小于 \\(180^\\circ\\)，二维频域中将出现未被径向切片覆盖的楔形区域。其结果通常是沿缺失方向的边缘无法稳定恢复。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "06 采样、噪声与伪影"
+    ]
+  },
+  {
+    "objectID": "artifacts.html#噪声传播",
+    "href": "artifacts.html#噪声传播",
+    "title": "采样、噪声与伪影",
+    "section": "4 噪声传播",
+    "text": "4 噪声传播\n光子计数近似服从 Poisson 分布：\n\\[\nR\\sim\\operatorname{Poisson}(\\bar R).\n\\tag{2}\\]\n负对数变换使噪声变为信号相关；Ramp 滤波又会增强高频噪声。因此低剂量条件下常使用窗化 FBP、统计迭代重构或学习型先验。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "06 采样、噪声与伪影"
+    ]
+  },
+  {
+    "objectID": "artifacts.html#探测器截断",
+    "href": "artifacts.html#探测器截断",
+    "title": "采样、噪声与伪影",
+    "section": "5 探测器截断",
+    "text": "5 探测器截断\n当物体超出探测器视野时，投影两端被截断，傅里叶切片条件所需的完整线积分不再可用。直接 FBP 会在视野边缘产生亮边或暗带，并造成全局偏差。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "06 采样、噪声与伪影"
+    ]
+  },
+  {
+    "objectID": "artifacts.html#束硬化",
+    "href": "artifacts.html#束硬化",
+    "title": "采样、噪声与伪影",
+    "section": "6 束硬化",
+    "text": "6 束硬化\n多能谱成像模型 不满足严格线性线积分。低能光子优先被吸收后，穿过厚区域的平均能量升高，使投影与路径长度之间呈非线性关系。均匀物体常表现为中心偏暗的杯状伪影，两个高衰减物体之间可能出现暗带。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "06 采样、噪声与伪影"
+    ]
+  },
+  {
+    "objectID": "artifacts.html#环状伪影",
+    "href": "artifacts.html#环状伪影",
+    "title": "采样、噪声与伪影",
+    "section": "7 环状伪影",
+    "text": "7 环状伪影\n探测器通道增益校正误差在每个角度中位于近似固定的 \\(s\\) 坐标。旋转重构后，这种固定列误差会形成以旋转中心为圆心的环。\n\n\n\n\n\n\n重要诊断原则\n\n\n\n不要把所有伪影都归因于重构算法。先检查原始投影和正弦图：固定列、角度突变、饱和区、截断边界和非线性趋势往往能直接暴露问题来源。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第二部分 · 图像重构",
+      "06 采样、噪声与伪影"
+    ]
+  },
+  {
+    "objectID": "exercises.html",
+    "href": "exercises.html",
+    "title": "练习与推导",
+    "section": "",
+    "text": "习题 1 (负对数变换) 从 Beer–Lambert 定律推导 负对数投影公式，并说明为什么暗场和平场误差会在厚物体区域被放大。\n\n\n习题 2 (角度约定) 若教材把 \\(\\theta\\) 定义为射线方向角而不是法向角，请重新写出 直线隐式方程与参数方程。\n\n\n习题 3 (点目标的正弦轨迹) 从 \\(s=x_0\\cos\\theta+y_0\\sin\\theta\\) 推导 点目标的极坐标正弦轨迹，并说明如何从正弦图振幅估计点到旋转中心的距离。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "学习与拓展",
+      "练习与推导"
+    ]
+  },
+  {
+    "objectID": "exercises.html#概念题",
+    "href": "exercises.html#概念题",
+    "title": "练习与推导",
+    "section": "",
+    "text": "习题 1 (负对数变换) 从 Beer–Lambert 定律推导 负对数投影公式，并说明为什么暗场和平场误差会在厚物体区域被放大。\n\n\n习题 2 (角度约定) 若教材把 \\(\\theta\\) 定义为射线方向角而不是法向角，请重新写出 直线隐式方程与参数方程。\n\n\n习题 3 (点目标的正弦轨迹) 从 \\(s=x_0\\cos\\theta+y_0\\sin\\theta\\) 推导 点目标的极坐标正弦轨迹，并说明如何从正弦图振幅估计点到旋转中心的距离。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "学习与拓展",
+      "练习与推导"
+    ]
+  },
+  {
+    "objectID": "exercises.html#推导题",
+    "href": "exercises.html#推导题",
+    "title": "练习与推导",
+    "section": "2 推导题",
+    "text": "2 推导题\n\n习题 4 (傅里叶切片定理) 把 Radon 变换参数式 代入 投影的一维傅里叶变换，通过坐标变换证明傅里叶切片定理。\n\n\n习题 5 (Ramp 滤波器来源) 从二维逆傅里叶变换的直角坐标积分出发，转换到 \\((\\omega,\\theta)\\) 极坐标，解释为什么 雅可比因子 为 \\(|\\omega|\\)。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "学习与拓展",
+      "练习与推导"
+    ]
+  },
+  {
+    "objectID": "exercises.html#编程题",
+    "href": "exercises.html#编程题",
+    "title": "练习与推导",
+    "section": "3 编程题",
+    "text": "3 编程题\n\n仅使用 NumPy 实现一维 Ramp 滤波，不调用 iradon。\n分别使用 30、60、180 和 360 个投影角重构同一 Phantom，绘制误差随角度数量的变化。\n给正弦图加入 Poisson 噪声，比较 Ramp、Hann 和 Shepp–Logan 滤波器。\n人为删除 \\(60^\\circ\\) 的投影区间，观察有限角伪影的方向性。\n给正弦图添加固定列偏差，验证环状伪影的形成。\n\n\n\n\n\n\n\n提示后续设计\n\n\n\n后续版本可为每道题加入折叠答案、自动评分 Notebook 和可调参数的交互式图形。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "学习与拓展",
+      "练习与推导"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "X 射线成像与 CT 重构",
+    "section": "",
+    "text": "这套课程从最简单的二维平行束模型出发，把几何、物理、数学与代码放在同一条推导链上。公式不是结论陈列，而是用来解释正弦图如何形成、反投影为何模糊，以及滤波为什么能够恢复空间频率。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "教学首页"
+    ]
+  },
+  {
+    "objectID": "index.html#学习路径",
+    "href": "index.html#学习路径",
+    "title": "X 射线成像与 CT 重构",
+    "section": "1 学习路径",
+    "text": "1 学习路径\n\n\n1.1 01 · 成像物理\n从 Beer–Lambert 定律出发，建立强度、衰减系数和线积分之间的关系。\n开始学习\n\n\n1.2 02 · 扫描几何\n定义平行束坐标系、探测器坐标、旋转角和射线路径。\n进入几何\n\n\n1.3 03 · Radon 变换\n理解投影、正弦图、角度冗余以及二维物体到投影空间的映射。\n学习 Radon 变换\n\n\n1.4 04 · 滤波反投影\n从傅里叶切片定理推导 Ramp 滤波器和 FBP 重构公式。\n学习 FBP\n\n\n1.5 05 · 数值实验\n使用 Python 生成 Phantom、正弦图、反投影和滤波重构结果。\n运行实验\n\n\n1.6 06 · 伪影分析\n比较欠采样、有限角、噪声、探测器截断和模型误差的影响。\n分析伪影",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "教学首页"
+    ]
+  },
+  {
+    "objectID": "index.html#阅读约定",
+    "href": "index.html#阅读约定",
+    "title": "X 射线成像与 CT 重构",
+    "section": "2 阅读约定",
+    "text": "2 阅读约定\n\n向量使用粗体，例如 \\(\\boldsymbol{x}=(x,y)^\\mathsf{T}\\)。\n连续物体记为 \\(f(x,y)\\)，投影记为 \\(p_\\theta(s)\\)。\n每个核心公式都具有编号，可以跨章节引用。\n推导后给出物理解释，再给出可运行的数值实验。\n“注意”说明模型条件，“实践”说明实现细节，“思考”用于练习。\n\n\n\n\n\n\n\n提示推荐起点\n\n\n\n第一次阅读时依次完成 成像物理基础、平行束扫描几何、Radon 变换 和 滤波反投影。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "教学首页"
+    ]
+  },
+  {
+    "objectID": "index.html#当前内容状态",
+    "href": "index.html#当前内容状态",
+    "title": "X 射线成像与 CT 重构",
+    "section": "3 当前内容状态",
+    "text": "3 当前内容状态\n\n\n\n模块\n状态\n主要输出\n\n\n\n\n平行束 CT\n已搭建\n完整推导框架、核心公式、Python 示例\n\n\n扇束 CT\n规划中\n加权、重排与扇束 FBP\n\n\n锥束 CT\n规划中\nFDK 几何与近似条件\n\n\n迭代重构\n规划中\nART、SART、正则化模型\n\n\n深度学习重构\n规划中\n数据一致性与学习型先验",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "教学首页"
+    ]
+  },
+  {
+    "objectID": "parallel-beam-geometry.html",
+    "href": "parallel-beam-geometry.html",
+    "title": "平行束扫描几何",
+    "section": "",
+    "text": "令二维物体的衰减系数分布为 \\(f(x,y)\\)。对投影角 \\(\\theta\\)，定义单位法向量与射线方向向量\n\\[\n\\boldsymbol{n}_\\theta=\n\\begin{bmatrix}\\cos\\theta\\\\\\sin\\theta\\end{bmatrix},\n\\qquad\n\\boldsymbol{t}_\\theta=\n\\begin{bmatrix}-\\sin\\theta\\\\\\cos\\theta\\end{bmatrix}.\n\\tag{1}\\]\n其中，\\(s\\) 表示射线到原点的有符号垂直距离，\\(t\\) 表示沿射线方向的位置。任意射线点可写为\n\\[\n\\boldsymbol{x}(s,t;\\theta)\n=s\\boldsymbol{n}_\\theta+t\\boldsymbol{t}_\\theta.\n\\tag{2}\\]\n展开 式 2 得\n\\[\nx=s\\cos\\theta-t\\sin\\theta,\n\\qquad\ny=s\\sin\\theta+t\\cos\\theta.\n\\tag{3}\\]",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第一部分 · CT 基础",
+      "02 平行束扫描几何"
+    ]
+  },
+  {
+    "objectID": "parallel-beam-geometry.html#坐标定义",
+    "href": "parallel-beam-geometry.html#坐标定义",
+    "title": "平行束扫描几何",
+    "section": "",
+    "text": "令二维物体的衰减系数分布为 \\(f(x,y)\\)。对投影角 \\(\\theta\\)，定义单位法向量与射线方向向量\n\\[\n\\boldsymbol{n}_\\theta=\n\\begin{bmatrix}\\cos\\theta\\\\\\sin\\theta\\end{bmatrix},\n\\qquad\n\\boldsymbol{t}_\\theta=\n\\begin{bmatrix}-\\sin\\theta\\\\\\cos\\theta\\end{bmatrix}.\n\\tag{1}\\]\n其中，\\(s\\) 表示射线到原点的有符号垂直距离，\\(t\\) 表示沿射线方向的位置。任意射线点可写为\n\\[\n\\boldsymbol{x}(s,t;\\theta)\n=s\\boldsymbol{n}_\\theta+t\\boldsymbol{t}_\\theta.\n\\tag{2}\\]\n展开 式 2 得\n\\[\nx=s\\cos\\theta-t\\sin\\theta,\n\\qquad\ny=s\\sin\\theta+t\\cos\\theta.\n\\tag{3}\\]",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第一部分 · CT 基础",
+      "02 平行束扫描几何"
+    ]
+  },
+  {
+    "objectID": "parallel-beam-geometry.html#射线的隐式方程",
+    "href": "parallel-beam-geometry.html#射线的隐式方程",
+    "title": "平行束扫描几何",
+    "section": "2 射线的隐式方程",
+    "text": "2 射线的隐式方程\n由于 \\(\\boldsymbol{x}\\cdot\\boldsymbol{n}_\\theta=s\\)，同一条射线上的所有点满足\n\\[\nx\\cos\\theta+y\\sin\\theta=s.\n\\tag{4}\\]\n这一定义非常重要：\\(\\theta\\) 描述射线法线方向，而不是射线自身的传播方向。\n\n\n\n\n\n\n警告常见混淆\n\n\n\n不同教材可能把 \\(\\theta\\) 定义为射线方向角，也可能定义为法向角。两种约定都可以使用，但公式中的正负号和 \\(90^\\circ\\) 偏移必须保持一致。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第一部分 · CT 基础",
+      "02 平行束扫描几何"
+    ]
+  },
+  {
+    "objectID": "parallel-beam-geometry.html#投影覆盖范围",
+    "href": "parallel-beam-geometry.html#投影覆盖范围",
+    "title": "平行束扫描几何",
+    "section": "3 投影覆盖范围",
+    "text": "3 投影覆盖范围\n对于理想二维平行束 CT，\\(\\theta\\in[0,\\pi)\\) 已包含全部独立直线，因为\n\\[\np_{\\theta+\\pi}(s)=p_\\theta(-s).\n\\tag{5}\\]\n式 5 表明 \\(180^\\circ\\) 后的投影与已有投影重复，只是探测器坐标方向相反。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第一部分 · CT 基础",
+      "02 平行束扫描几何"
+    ]
+  },
+  {
+    "objectID": "parallel-beam-geometry.html#离散采样",
+    "href": "parallel-beam-geometry.html#离散采样",
+    "title": "平行束扫描几何",
+    "section": "4 离散采样",
+    "text": "4 离散采样\n设探测器间距为 \\(\\Delta s\\)，角度步长为 \\(\\Delta\\theta\\)，离散坐标可写为\n\\[\ns_m=(m-m_0)\\Delta s,\n\\qquad\n\\theta_k=k\\Delta\\theta.\n\\tag{6}\\]\n这些采样参数决定正弦图的尺寸，也决定能够恢复的空间分辨率和角向混叠程度。相关条件将在 采样、噪声与伪影 中展开。\n\n习题 1 (几何练习) 证明 \\(\\boldsymbol{n}_\\theta\\) 与 \\(\\boldsymbol{t}_\\theta\\) 正交，并验证坐标变换 式 3 的雅可比行列式绝对值为 1。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "第一部分 · CT 基础",
+      "02 平行束扫描几何"
+    ]
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "参考资料",
+    "section": "",
+    "text": "使用 Kak 与 Slaney 的教材建立投影和 FBP 的直观认识 (Kak 和 Slaney 2001年)。\n使用 Natterer 的教材理解 Radon 变换和逆问题的数学结构 (Natterer 2001年)。\n使用 Buzug 的教材补充现代 CT 系统与成像物理 (Buzug 2008年)。\n回顾 Radon 的原始工作，理解积分几何问题的历史来源 (Radon 1917年)。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "学习与拓展",
+      "参考资料"
+    ]
+  },
+  {
+    "objectID": "references.html#建议阅读顺序",
+    "href": "references.html#建议阅读顺序",
+    "title": "参考资料",
+    "section": "",
+    "text": "使用 Kak 与 Slaney 的教材建立投影和 FBP 的直观认识 (Kak 和 Slaney 2001年)。\n使用 Natterer 的教材理解 Radon 变换和逆问题的数学结构 (Natterer 2001年)。\n使用 Buzug 的教材补充现代 CT 系统与成像物理 (Buzug 2008年)。\n回顾 Radon 的原始工作，理解积分几何问题的历史来源 (Radon 1917年)。",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "学习与拓展",
+      "参考资料"
+    ]
+  },
+  {
+    "objectID": "references.html#在线实现",
+    "href": "references.html#在线实现",
+    "title": "参考资料",
+    "section": "2 在线实现",
+    "text": "2 在线实现\n\nscikit-image Radon transform example\nQuarto scientific publishing\nMathJax documentation",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "学习与拓展",
+      "参考资料"
+    ]
+  },
+  {
+    "objectID": "references.html#references",
+    "href": "references.html#references",
+    "title": "参考资料",
+    "section": "3 References",
+    "text": "3 References\n\n\nBuzug, Thorsten M. 2008年. Computed Tomography: From Photon Statistics to Modern Cone-Beam CT. Springer. https://doi.org/10.1007/978-3-540-39408-2.\n\n\nKak, Avinash C., 和 Malcolm Slaney. 2001年. Principles of Computerized Tomographic Imaging. Society for Industrial; Applied Mathematics. https://doi.org/10.1137/1.9780898719277.\n\n\nNatterer, Frank. 2001年. The Mathematics of Computerized Tomography. 1 版. Society for Industrial; Applied Mathematics. https://doi.org/10.1137/1.9780898719284.\n\n\nRadon, Johann. 1917年. 《On the Determination of Functions from Their Integral Values along Certain Manifolds》. Berichte ueber die Verhandlungen der Koeniglich-Saechsischen Akademie der Wissenschaften zu Leipzig 69: 262～77.",
+    "crumbs": [
+      "WEIZHENG WANG",
+      "学习与拓展",
+      "参考资料"
+    ]
+  }
+]
