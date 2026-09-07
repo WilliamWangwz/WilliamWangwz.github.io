@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="锥束 X 射线成像物方分辨率与焦点模糊计算工具。" />
+    <meta name="theme-color" content="#050506" />
+    <title>X 射线分辨率计算 | Weizheng Wang</title>
+    <link rel="stylesheet" href="styles.css?v=resolution-1" />
+    <script defer src="resolution.js?v=resolution-1"></script>
+  </head>
+  <body class="calculator-page resolution-page">
+    <a class="skip-link" href="#main">跳到主要内容</a>
+    <header class="site-header">
+      <a class="wordmark" href="index.html">WEIZHENG WANG</a>
+      <nav aria-label="主要导航"><a href="index.html#research">研究</a><a href="attenuation.html">透射计算</a><a href="resolution.html" aria-current="page">分辨率计算</a><a href="index.html#teaching">教学</a><a href="index.html#projects">项目</a></nav>
+      <a class="nav-orcid" href="https://orcid.org/0009-0001-5623-5971" target="_blank" rel="me noreferrer">ORCID</a>
+    </header>
+
+    <main id="main">
+      <section class="resolution section" aria-labelledby="resolution-title">
+        <div class="section-intro resolution-intro">
+          <p class="eyebrow">Cone-beam resolution calculator</p>
+          <h1 id="resolution-title">X 射线分辨率计算。</h1>
+          <p>将探测器采样和有限焦点模糊换算到物方，快速估计锥束成像系统的空间分辨能力。</p>
+        </div>
+
+        <div class="resolution-workspace">
+          <form class="resolution-form" id="resolutionForm">
+            <div class="resolution-form-heading"><div><span>Imaging geometry</span><h2>输入参数</h2></div><p>长度统一使用毫米。</p></div>
+            <div class="resolution-fields">
+              <label class="field" for="resolutionSod">SOD 源物距 <span>mm</span><input id="resolutionSod" type="number" min="0.000001" step="1" value="500" /></label>
+              <label class="field" for="resolutionSdd">SDD 源探距 <span>mm</span><input id="resolutionSdd" type="number" min="0.000001" step="1" value="1000" /></label>
+              <label class="field" for="detectorPitch">探测器有效分辨单元 p <span>mm</span><input id="detectorPitch" type="number" min="0.000001" step="0.001" value="0.200" /></label>
+              <label class="field" for="focalSpot">焦点尺寸 f <span>mm</span><input id="focalSpot" type="number" min="0" step="0.001" value="0.100" /></label>
+              <label class="field field-wide" for="detectorPixels">探测器横向像素数 <span>px，仅用于物方视场</span><input id="detectorPixels" type="number" min="1" step="1" value="2048" /></label>
+            </div>
+            <div class="calculator-actions"><button class="button button-light" type="submit">计算分辨率</button><button class="button button-dark" type="button" id="resetResolution">恢复示例</button></div>
+            <p class="calculator-status" id="resolutionStatus" role="status" aria-live="polite">参数有效，结果已更新。</p>
+          </form>
+
+          <div class="resolution-results" aria-live="polite">
+            <div class="resolution-results-heading"><div><span>Object-space estimate</span><h2>物方结果</h2></div><strong id="resolutionSummary">111.8 μm</strong></div>
+            <div class="resolution-metrics">
+              <div><span>几何放大倍数 M</span><strong id="resultMagnification">—</strong><small>SDD / SOD</small></div>
+              <div><span>探测器采样 r<sub>det</sub></span><strong id="resultDetectorResolution">—</strong><small>p / M</small></div>
+              <div><span>焦点模糊 r<sub>spot</sub></span><strong id="resultSpotBlur">—</strong><small>f (1 − 1/M)</small></div>
+              <div class="metric-primary"><span>系统分辨率 r<sub>sys</sub></span><strong id="resultSystemResolution">—</strong><small>Gaussian PSF 工程估计</small></div>
+              <div><span>Nyquist 频率</span><strong id="resultNyquist">—</strong><small>1 / (2r<sub>sys</sub>)</small></div>
+              <div><span>物方横向视场</span><strong id="resultObjectFov">—</strong><small>Np / M</small></div>
+            </div>
+            <p class="resolution-recommendation" id="resolutionRecommendation"></p>
+          </div>
+        </div>
+
+        <div class="resolution-visuals">
+          <section class="geometry-card" aria-labelledby="geometry-card-title">
+            <div class="visual-heading"><span>Geometry</span><h2 id="geometry-card-title">成像几何</h2></div>
+            <svg id="resolutionDiagram" viewBox="0 0 900 330" role="img" aria-label="X 射线源、物体和探测器几何示意图"></svg>
+          </section>
+          <section class="formula-card" aria-labelledby="formula-card-title">
+            <div class="visual-heading"><span>Model</span><h2 id="formula-card-title">计算模型</h2></div>
+            <div class="resolution-formulas">
+              <p><span>放大倍数</span><strong>M = SDD / SOD</strong></p>
+              <p><span>物方采样</span><strong>r<sub>det</sub> = p / M</strong></p>
+              <p><span>物方焦点模糊</span><strong>r<sub>spot</sub> = f (1 − 1/M)</strong></p>
+              <p><span>系统估计</span><strong>r<sub>sys</sub> ≈ √(r<sub>det</sub>² + r<sub>spot</sub>²)</strong></p>
+            </div>
+            <p class="model-note">系统合成式假设探测器与焦点的点扩散函数近似 Gaussian。它适合快速工程估计，不等同于实测 MTF 分辨率。</p>
+          </section>
+        </div>
+      </section>
+    </main>
+    <footer><a class="wordmark" href="index.html">WEIZHENG WANG</a><p>Materials dynamics, X-ray imaging and scientific software.</p><nav><a href="index.html">个人主页</a><a href="attenuation.html">透射计算</a><a href="index.html#teaching">教学</a><a href="xrayforge/">XRayForge</a></nav><span>© 2026 Weizheng Wang</span></footer>
+  </body>
+</html>

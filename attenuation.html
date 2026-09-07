@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="X 射线材料透射强度与透射率计算工具。" />
+    <meta name="theme-color" content="#050506" />
+    <title>X 射线透射计算 | Weizheng Wang</title>
+    <link rel="stylesheet" href="styles.css?v=attenuation-2" />
+    <script defer src="attenuation.js?v=attenuation-2"></script>
+  </head>
+  <body class="calculator-page">
+    <a class="skip-link" href="#main">跳到主要内容</a>
+    <header class="site-header">
+      <a class="wordmark" href="index.html">WEIZHENG WANG</a>
+      <nav aria-label="主要导航"><a href="index.html#research">研究</a><a href="attenuation.html" aria-current="page">透射计算</a><a href="resolution.html">分辨率计算</a><a href="index.html#teaching">教学</a><a href="index.html#publications">论文</a><a href="index.html#projects">项目</a></nav>
+      <a class="nav-orcid" href="https://orcid.org/0009-0001-5623-5971" target="_blank" rel="me noreferrer">ORCID</a>
+    </header>
+
+    <main id="main">
+      <section class="attenuation section" id="attenuation" aria-labelledby="attenuation-title">
+        <div class="section-intro attenuation-intro">
+          <p class="eyebrow">X-ray transmission calculator</p>
+          <h1 id="attenuation-title">X 射线透射计算。</h1>
+          <p>基于 NIST XCOM 质量衰减系数和 Beer-Lambert 定律，计算材料在不同能量下的透射强度与透射率。</p>
+        </div>
+        <div class="attenuation-workspace">
+          <form class="attenuation-form" id="attenuationForm">
+            <fieldset>
+              <legend>材料</legend>
+              <div class="calculator-fields calculator-fields-material">
+                <label class="field field-wide" for="knownMaterial">内置材料
+                  <select id="knownMaterial" name="material"><option value="aluminum">铝 Aluminum</option><option value="iron">铁 Iron</option><option value="cobalt">钴 Cobalt</option><option value="tungsten">钨 Tungsten</option></select>
+                </label>
+                <label class="field" for="materialFormula">化学式<input id="materialFormula" name="formula" type="text" value="Al" autocomplete="off" spellcheck="false" /></label>
+                <label class="field" for="materialDensity">密度 <span>g/cm³</span><input id="materialDensity" name="density" type="number" min="0.000001" step="0.001" value="2.70" /></label>
+                <label class="field" for="materialThickness">厚度 <span>mm</span><input id="materialThickness" name="thickness" type="number" min="0" step="0.01" value="1.00" /></label>
+                <label class="field" for="incidentIntensity">入射强度 I₀<input id="incidentIntensity" name="incidentIntensity" type="number" min="0.000001" step="1000" value="1000000" /></label>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>X 射线能量</legend>
+              <div class="calculator-fields calculator-fields-energy">
+                <label class="field" for="energyMin">起始 <span>keV</span><input id="energyMin" name="energyMin" type="number" min="1" step="1" value="20" /></label>
+                <label class="field" for="energyMax">终止 <span>keV</span><input id="energyMax" name="energyMax" type="number" min="1" step="1" value="200" /></label>
+                <label class="field" for="energyStep">步长 <span>keV</span><select id="energyStep" name="energyStep"><option value="0.1">0.1</option><option value="0.5">0.5</option><option value="1" selected>1</option><option value="2">2</option><option value="5">5</option><option value="10">10</option></select></label>
+                <label class="field" for="plotMode">纵轴<select id="plotMode" name="plotMode"><option value="transmission" selected>透射率 T (%)</option><option value="intensity">透射强度 I</option><option value="attenuation">线性衰减系数 μ</option></select></label>
+              </div>
+            </fieldset>
+            <fieldset class="penetration-fieldset">
+              <legend>穿透厚度反算</legend>
+              <p class="fieldset-note">指定单能 X 射线和最低可检测透射率，反算材料厚度。</p>
+              <div class="calculator-fields">
+                <label class="field" for="penetrationEnergy">光子能量 <span>keV</span><input id="penetrationEnergy" name="penetrationEnergy" type="number" min="1" step="1" value="80" /></label>
+                <label class="field" for="penetrationTarget">最低透射率 <span>%</span><input id="penetrationTarget" name="penetrationTarget" type="number" min="0.000001" max="99.999999" step="0.1" value="1" /></label>
+              </div>
+              <div class="penetration-answer">
+                <span id="penetrationAnswerLabel">透射率降至 1% 时</span>
+                <strong id="penetrationThickness">—</strong>
+                <small id="penetrationDetails">输入有效参数后计算</small>
+              </div>
+            </fieldset>
+            <div class="calculator-actions"><button class="button button-light" type="submit" id="calculateAttenuation">计算</button><button class="button button-dark" type="button" id="downloadAttenuation" disabled>下载 CSV</button></div>
+            <p class="calculator-status" id="calculatorStatus" role="status" aria-live="polite">正在加载材料数据…</p>
+          </form>
+          <div class="attenuation-output" aria-live="polite">
+            <div class="output-heading"><div><span id="resultMaterial">Al · 2.700 g/cm³ · 1.000 mm</span><strong id="resultRange">20–200 keV</strong></div><label for="sampleEnergy">取值能量 <span>keV</span><input id="sampleEnergy" type="number" min="20" max="200" step="1" value="80" /></label></div>
+            <div class="transmission-chart-wrap"><canvas id="transmissionChart" width="1280" height="560" aria-label="X 射线透射计算曲线"></canvas><div class="chart-tooltip" id="chartTooltip" hidden></div></div>
+            <div class="transmission-metrics"><div><span>质量衰减系数 μ/ρ</span><strong id="resultMassMu">—</strong><small>cm²/g</small></div><div><span>线性衰减系数 μ</span><strong id="resultLinearMu">—</strong><small>cm⁻¹</small></div><div><span>透射率 T</span><strong id="resultTransmission">—</strong><small id="resultEnergyLabel">at 80 keV</small></div><div><span>透射强度 I</span><strong id="resultIntensity">—</strong><small id="resultIncidentLabel">I₀ = 1.000e+6</small></div></div>
+            <section class="equivalent-thickness" aria-labelledby="equivalent-title">
+              <div class="equivalent-heading"><div><span>Material equivalence</span><h2 id="equivalent-title">等效厚度</h2></div><p id="equivalentDescription">与 1.000 mm Al 在 80 keV 下产生相同透射率。</p></div>
+              <div class="equivalent-results">
+                <div><span>等效钢厚度</span><strong id="resultSteelEquivalent">—</strong><small>钢采用 Fe 衰减系数，ρ = 7.85 g/cm³</small></div>
+                <div><span>等效水厚度</span><strong id="resultWaterEquivalent">—</strong><small>液态水，ρ = 1.00 g/cm³</small></div>
+              </div>
+            </section>
+            <div class="equation-strip" aria-label="Beer-Lambert 透射公式"><span>I = I₀ exp(−μx)</span><span>T = I / I₀</span><span>μ = (μ/ρ)ρ</span><span>x<sub>eq</sub> = μx / μ<sub>ref</sub></span></div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer><a class="wordmark" href="index.html">WEIZHENG WANG</a><p>Materials dynamics, X-ray imaging and scientific software.</p><nav><a href="index.html">个人主页</a><a href="resolution.html">分辨率计算</a><a href="index.html#teaching">教学</a><a href="xrayforge/">XRayForge</a></nav><span>© 2026 Weizheng Wang</span></footer>
+  </body>
+</html>
