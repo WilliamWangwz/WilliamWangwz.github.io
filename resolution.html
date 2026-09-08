@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="锥束 X 射线成像物方分辨率与焦点模糊计算工具。" />
+    <meta name="description" content="锥束 X 射线分辨率计算器：估算物方采样、焦点模糊和系统分辨率。" />
     <meta name="theme-color" content="#050506" />
-    <title>X 射线分辨率计算 | Weizheng Wang</title>
-    <link rel="stylesheet" href="styles.css?v=resolution-1" />
-    <script defer src="resolution.js?v=resolution-1"></script>
+    <title>锥束 X 射线分辨率计算器 | Weizheng Wang</title>
+    <link rel="stylesheet" href="styles.css?v=20260908-1" />
+    <script defer src="resolution.js?v=20260908-1"></script>
   </head>
   <body class="calculator-page resolution-page">
     <a class="skip-link" href="#main">跳到主要内容</a>
@@ -21,16 +21,16 @@
       <section class="resolution section" aria-labelledby="resolution-title">
         <div class="section-intro resolution-intro">
           <p class="eyebrow">Cone-beam resolution calculator</p>
-          <h1 id="resolution-title">X 射线分辨率计算。</h1>
+          <h1 id="resolution-title">锥束 X 射线分辨率计算器</h1>
           <p>将探测器采样和有限焦点模糊换算到物方，快速估计锥束成像系统的空间分辨能力。</p>
         </div>
 
         <div class="resolution-workspace">
-          <form class="resolution-form" id="resolutionForm">
+          <form class="resolution-form" id="resolutionForm" novalidate>
             <div class="resolution-form-heading"><div><span>Imaging geometry</span><h2>输入参数</h2></div><p>长度统一使用毫米。</p></div>
             <div class="resolution-fields">
-              <label class="field" for="resolutionSod">SOD 源物距 <span>mm</span><input id="resolutionSod" type="number" min="0.000001" step="1" value="500" /></label>
-              <label class="field" for="resolutionSdd">SDD 源探距 <span>mm</span><input id="resolutionSdd" type="number" min="0.000001" step="1" value="1000" /></label>
+              <label class="field" for="resolutionSod">SOD 源物距 <span>mm</span><input id="resolutionSod" type="number" min="1" step="1" value="500" inputmode="numeric" /></label>
+              <label class="field" for="resolutionSdd">SDD 源探距 <span>mm</span><input id="resolutionSdd" type="number" min="1" step="1" value="1000" inputmode="numeric" /></label>
               <label class="field" for="detectorPitch">探测器有效分辨单元 p <span>mm</span><input id="detectorPitch" type="number" min="0.000001" step="0.001" value="0.200" /></label>
               <label class="field" for="focalSpot">焦点尺寸 f <span>mm</span><input id="focalSpot" type="number" min="0" step="0.001" value="0.100" /></label>
               <label class="field field-wide" for="detectorPixels">探测器横向像素数 <span>px，仅用于物方视场</span><input id="detectorPixels" type="number" min="1" step="1" value="2048" /></label>
@@ -42,16 +42,32 @@
           <div class="resolution-results" aria-live="polite">
             <div class="resolution-results-heading"><div><span>Object-space estimate</span><h2>物方结果</h2></div><strong id="resolutionSummary">111.8 μm</strong></div>
             <div class="resolution-metrics">
-              <div><span>几何放大倍数 M</span><strong id="resultMagnification">—</strong><small>SDD / SOD</small></div>
-              <div><span>探测器采样 r<sub>det</sub></span><strong id="resultDetectorResolution">—</strong><small>p / M</small></div>
-              <div><span>焦点模糊 r<sub>spot</sub></span><strong id="resultSpotBlur">—</strong><small>f (1 − 1/M)</small></div>
-              <div class="metric-primary"><span>系统分辨率 r<sub>sys</sub></span><strong id="resultSystemResolution">—</strong><small>Gaussian PSF 工程估计</small></div>
-              <div><span>Nyquist 频率</span><strong id="resultNyquist">—</strong><small>1 / (2r<sub>sys</sub>)</small></div>
-              <div><span>物方横向视场</span><strong id="resultObjectFov">—</strong><small>Np / M</small></div>
+              <div><span>几何放大倍数 M</span><strong id="resultMagnification">—</strong></div>
+              <div><span>探测器采样 r<sub>det</sub></span><strong id="resultDetectorResolution">—</strong></div>
+              <div><span>焦点模糊 r<sub>spot</sub></span><strong id="resultSpotBlur">—</strong></div>
+              <div class="metric-primary"><span>系统分辨率 r<sub>sys</sub></span><strong id="resultSystemResolution">—</strong></div>
+              <div><span>等效空间频率</span><strong id="resultNyquist">—</strong></div>
+              <div><span>物方横向视场</span><strong id="resultObjectFov">—</strong></div>
             </div>
             <p class="resolution-recommendation" id="resolutionRecommendation"></p>
           </div>
         </div>
+
+        <details class="derivation-panel">
+          <summary><span>Detailed derivation</span><strong>详细公式推导</strong><b>＋</b></summary>
+          <div class="derivation-content">
+            <div class="derivation-lead"><p>下面的推导解释页面中每一个数值的来源。所有长度均先用 mm 计算，最后再换算为 μm。</p><div class="derivation-current"><span>当前参数</span><strong id="derivationInputs">SOD 500 mm · SDD 1000 mm · p 0.200 mm · f 0.100 mm</strong></div></div>
+            <div class="derivation-grid">
+              <article class="derivation-step"><span>01</span><div><h3>几何放大倍数</h3><p>源到探测器的距离由源到物体的距离得到放大倍数：</p><div class="derivation-equation">M = <span class="fraction"><i>SDD</i><em>SOD</em></span> = <span id="derivationM">2.0000</span></div></div></article>
+              <article class="derivation-step"><span>02</span><div><h3>探测器采样折算到物方</h3><p>探测器的一个有效分辨单元，经几何放大后对应更小的物方尺寸：</p><div class="derivation-equation">r<sub>det</sub> = <span class="fraction"><i>p</i><em>M</em></span> = <span id="derivationRdet">0.1000 mm</span></div></div></article>
+              <article class="derivation-step"><span>03</span><div><h3>有限焦点产生的模糊</h3><p>先计算探测器平面的几何不清晰度 U<sub>g</sub>。由 ODD = SDD − SOD 和相似三角形：</p><div class="derivation-equation">U<sub>g</sub> = f <span class="fraction"><i>ODD</i><em>SOD</em></span> = f(M − 1) = <span id="derivationUg">0.1000 mm</span></div><p>页面显示的是物方焦点模糊，因此还要除以 M：</p><div class="derivation-equation">r<sub>spot</sub> = <span class="fraction"><i>U<sub>g</sub></i><em>M</em></span> = f<span class="fraction"><i>M − 1</i><em>M</em></span> = <span id="derivationRspot">0.0500 mm</span></div></div></article>
+              <article class="derivation-step"><span>04</span><div><h3>系统等效分辨率</h3><p>将探测器采样和焦点模糊视为相互独立的 Gaussian 模糊源，使用 RMS 合成：</p><div class="derivation-equation">r<sub>sys</sub> ≈ √(r<sub>det</sub><sup>2</sup> + r<sub>spot</sub><sup>2</sup>) = <span id="derivationRsys">0.1118 mm</span></div></div></article>
+              <article class="derivation-step"><span>05</span><div><h3>空间频率与视场</h3><p>页面的等效空间频率由系统分辨率定义；物方横向视场由探测器宽度折算得到：</p><div class="derivation-equation">f<sub>eq</sub> = <span class="fraction"><i>1</i><em>2r<sub>sys</sub></em></span> = <span id="derivationFreq">4.472 lp/mm</span></div><div class="derivation-equation">FOV<sub>object</sub> = <span class="fraction"><i>Np</i><em>M</em></span> = <span id="derivationFov">204.80 mm</span></div><p class="derivation-note">严格的 sampling Nyquist 频率应使用物方采样间隔：f<sub>N,sampling</sub> = M/(2p)。页面的 f<sub>eq</sub> 已将焦点模糊纳入，因此标记为等效空间频率。</p></div></article>
+              <article class="derivation-step"><span>06</span><div><h3>理论最优放大倍数</h3><p>令 r<sub>sys</sub><sup>2</sup> = (p/M)<sup>2</sup> + [f(M−1)/M]<sup>2</sup> 最小，对 M 求导并令其为零：</p><div class="derivation-equation">M<sub>opt</sub> = 1 + <span class="fraction"><i>p<sup>2</sup></i><em>f<sup>2</sup></em></span> = 1 + (p/f)<sup>2</sup> = <span id="derivationMopt">5.0000×</span></div><p class="derivation-note">提高 M 会降低物方探测器采样，但同时增加焦点模糊并缩小 FOV，因此系统存在折中。</p></div></article>
+            </div>
+            <div class="derivation-summary"><span>合并后的核心公式</span><strong>r<sub>sys</sub> ≈ √[(p/M)<sup>2</sup> + (f(M−1)/M)<sup>2</sup>]</strong><small>这是投影链路的理论物方分辨率估计，不等同于最终 CT 重构后的实测 3D 分辨率。</small></div>
+          </div>
+        </details>
 
         <div class="resolution-visuals">
           <section class="geometry-card" aria-labelledby="geometry-card-title">

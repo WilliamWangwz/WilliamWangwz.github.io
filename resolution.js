@@ -39,7 +39,7 @@
       <rect x="${objectX - 10}" y="${centerY - objectHalf}" width="20" height="${objectHalf * 2}" rx="4" fill="#e8e8ed" opacity=".88"/>
       <rect x="${detectorX - 6}" y="${centerY - detectorHalf}" width="12" height="${detectorHalf * 2}" rx="3" fill="#58a6c6"/>
       <rect x="${detectorX - blurVisual / 2}" y="${centerY - 23}" width="${blurVisual}" height="46" fill="#f2b84b" opacity=".42"/>
-      <text x="${sourceX}" y="28" text-anchor="middle">焦点 f</text><text x="${objectX}" y="28" text-anchor="middle">物体</text><text x="${detectorX}" y="28" text-anchor="middle">探测器</text>
+      <text x="${sourceX}" y="28" text-anchor="middle">焦点尺寸 f = ${values.focal.toFixed(3)} mm</text><text x="${objectX}" y="28" text-anchor="middle">物体</text><text x="${detectorX}" y="28" text-anchor="middle">探测器</text>
       <line x1="${sourceX}" y1="286" x2="${objectX}" y2="286" stroke="#717680" marker-end="url(#resolutionArrow)"/>
       <line x1="${sourceX}" y1="312" x2="${detectorX}" y2="312" stroke="#717680" marker-end="url(#resolutionArrow)"/>
       <text x="${(sourceX + objectX) / 2}" y="278" text-anchor="middle">SOD ${values.sod.toFixed(1)} mm</text>
@@ -74,6 +74,17 @@
     $("resultNyquist").textContent = `${nyquist.toFixed(3)} lp/mm`;
     $("resultObjectFov").textContent = formatDistance(objectFov);
     $("resolutionSummary").textContent = formatResolution(systemResolution);
+    $("derivationInputs").textContent = `SOD ${sod.toFixed(3)} mm · SDD ${sdd.toFixed(3)} mm · p ${pitch.toFixed(3)} mm · f ${focal.toFixed(3)} mm`;
+    $("derivationM").textContent = magnification.toFixed(4);
+    $("derivationRdet").textContent = `${detectorResolution.toFixed(4)} mm`;
+    $("derivationUg").textContent = `${geometricBlur.toFixed(4)} mm`;
+    $("derivationRspot").textContent = `${spotBlur.toFixed(4)} mm`;
+    $("derivationRsys").textContent = `${systemResolution.toFixed(4)} mm`;
+    $("derivationFreq").textContent = `${nyquist.toFixed(3)} lp/mm`;
+    $("derivationFov").textContent = formatDistance(objectFov);
+    $("derivationMopt").textContent = focal > 0
+      ? `${(1 + (pitch / focal) ** 2).toFixed(4)}×`
+      : "∞（理想点焦点）";
     if (focal > 0) {
       const optimalM = 1 + (pitch / focal) ** 2;
       const direction = magnification < optimalM ? "提高" : magnification > optimalM ? "降低" : "保持";
