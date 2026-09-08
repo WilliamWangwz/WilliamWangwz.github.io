@@ -60,6 +60,16 @@ img { display:block; max-width:100%; }
 .field-wide { grid-column:1 / -1; }
 .field input, .field select, .output-heading input { width:100%; min-height:42px; border:1px solid var(--line-strong); border-radius:3px; padding:0 11px; outline:none; background:#15171c; color:var(--white); font:inherit; font-size:14px; font-weight:500; }
 .field input:focus, .field select:focus, .output-heading input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(88,166,198,.16); }
+.custom-material-panel { grid-column:1 / -1; display:grid; gap:15px; padding:18px; border:1px solid rgba(88,166,198,.28); background:rgba(88,166,198,.045); }
+.custom-material-panel[hidden], #knownMaterialField[hidden] { display:none; }
+.custom-material-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; }
+.field textarea { width:100%; resize:vertical; min-height:145px; border:1px solid var(--line-strong); border-radius:3px; padding:11px; outline:none; background:#0a0b0e; color:var(--white); font:12px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace; }
+.field textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(88,166,198,.16); }
+.field input[type="file"] { min-height:auto; padding:9px; font-size:11px; }
+.field input[type="file"]::file-selector-button { margin-right:12px; border:0; border-radius:3px; padding:7px 11px; background:#f0f0f2; color:#111114; cursor:pointer; }
+.custom-material-help, .custom-material-status { margin:0; color:var(--dim); font-size:11px; line-height:1.55; }
+.custom-material-help a { color:var(--accent); }
+.custom-material-status { min-height:17px; color:var(--muted); }
 .calculator-actions { display:flex; gap:10px; }
 .calculator-actions .button { cursor:pointer; font:inherit; }
 .calculator-actions .button:disabled { cursor:not-allowed; opacity:.42; }
@@ -219,4 +229,5 @@ footer > span { grid-column:1 / -1; padding-top:18px; border-top:1px solid var(-
 @media (max-width:700px) { .resolution { padding:92px 18px 54px; } .resolution-intro h1 { font-size:clamp(27px,7.5vw,43px); } .resolution-workspace { margin-top:42px; } .resolution-form, .resolution-results, .geometry-card, .formula-card { padding:20px 16px; } .resolution-form { display:block; } .resolution-fields { grid-template-columns:1fr 1fr; } .resolution-form .calculator-actions { margin-top:0; } .resolution-results-heading { align-items:start; flex-direction:column; } .resolution-metrics { grid-template-columns:1fr 1fr; } .resolution-metrics strong { font-size:20px; } .resolution-visuals { gap:20px; margin-top:20px; } #resolutionDiagram { margin-top:12px; } }
 @media (max-width:700px) { .derivation-panel { margin-top:20px; } .derivation-panel summary { flex-wrap:wrap; gap:5px 12px; padding:18px 16px; } .derivation-panel summary span { width:100%; } .derivation-panel summary b { position:absolute; right:34px; } .derivation-content { padding:20px 16px; } .derivation-step { grid-template-columns:27px 1fr; gap:9px; padding:23px 0; } .derivation-equation { font-size:17px; } .derivation-summary { padding:18px 15px; } .derivation-summary strong { overflow-x:auto; font-size:19px; white-space:nowrap; } }
 @media (max-width:430px) { .resolution-fields { grid-template-columns:1fr; } .resolution-metrics { grid-template-columns:1fr; } }
+@media (max-width:430px) { .custom-material-options { grid-template-columns:1fr; } }
 @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } * { transition:none!important; } }

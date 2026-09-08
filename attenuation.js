@@ -29,6 +29,58 @@
   const chart = $("transmissionChart");
   const ctx = chart.getContext("2d");
   let latest = null;
+  let customMaterial = null;
+  let liveCalculateTimer = null;
+
+  function currentMaterial() {
+    return $("materialSource").value === "custom" ? customMaterial : MATERIALS[$("knownMaterial").value];
+  }
+
+  function parseCustomTable(text) {
+    const unitScale = { eV: .001, keV: 1, MeV: 1000 }[$("customEnergyUnit").value];
+    const selectedColumn = $("customMuColumn").value;
+    const rows = [];
+    text.split(/\r?\n/).forEach((rawLine) => {
+      const line = rawLine.trim();
+      if (!line || /^[#!%]/.test(line)) return;
+      const values = line.split(/[\s,;]+/).map(Number);
+      if (values.length < 2 || values.some((value) => !Number.isFinite(value))) return;
+      const muColumn = selectedColumn === "auto" ? (values.length >= 8 ? 6 : 1) : Number(selectedColumn);
+      if (muColumn >= values.length) return;
+      const energy = values[0] * unitScale;
+      const mu = values[muColumn];
+      if (energy > 0 && mu >= 0) rows.push([energy, mu]);
+    });
+    const byEnergy = new Map();
+    rows.forEach((row) => byEnergy.set(row[0], row));
+    const unique = Array.from(byEnergy.values()).sort((a, b) => a[0] - b[0]);
+    if (unique.length < 2) throw new Error("至少需要两行有效的能量和 μ/ρ 数据。请检查单位与数据列。 ");
+    return unique;
+  }
+
+  function loadCustomMaterial() {
+    try {
+      const points = parseCustomTable($("customMaterialTable").value);
+      const label = $("materialFormula").value.trim() || "Custom material";
+      const density = Number($("materialDensity").value);
+      if (!Number.isFinite(density) || density <= 0) throw new Error("请输入有效的材料密度。 ");
+      customMaterial = { label, formula: label, density, points, custom: true };
+      const minEnergy = points[0][0];
+      const maxEnergy = points[points.length - 1][0];
+      $("energyMin").value = minEnergy;
+      $("energyMax").value = maxEnergy;
+      if (Number($("penetrationEnergy").value) < minEnergy || Number($("penetrationEnergy").value) > maxEnergy) {
+        $("penetrationEnergy").value = points[Math.floor(points.length / 2)][0];
+      }
+      $("customMaterialStatus").textContent = `已载入 ${points.length} 个数据点，范围 ${minEnergy}–${maxEnergy} keV。`;
+      calculate();
+    } catch (error) {
+      customMaterial = null;
+      $("customMaterialStatus").textContent = error.message;
+      $("downloadAttenuation").disabled = true;
+      $("calculatorStatus").textContent = "请先载入有效的自定义材料数据。";
+    }
+  }
 
   function interpLogLog(points, energy) {
     if (energy <= points[0][0]) return points[0][1];
@@ -64,8 +116,15 @@
     return `${value.toFixed(4)} mm`;
   }
 
+  function plotValue(row, mode) {
+    if (mode === "transmission") return row.transmission * 100;
+    if (mode === "attenuationRate") return (1 - row.transmission) * 100;
+    if (mode === "intensity") return row.intensity;
+    return row.linearMu;
+  }
+
   function calculate() {
-    const material = MATERIALS[$("knownMaterial").value];
+    const material = currentMaterial();
     const min = Number($("energyMin").value);
     const max = Number($("energyMax").value);
     const step = Number($("energyStep").value);
@@ -75,13 +134,15 @@
     const mode = $("plotMode").value;
     if (!material || ![min, max, step, density, thickness, incident].every(Number.isFinite) || min <= 0 || max <= min || step <= 0 || density <= 0 || thickness < 0 || incident <= 0) {
       $("calculatorStatus").textContent = "请检查输入：能量范围、密度、厚度和入射强度必须为有效正值。";
-      return;
+      $("downloadAttenuation").disabled = true;
+      return false;
     }
     const supportedMin = material.points[0][0];
     const supportedMax = material.points[material.points.length - 1][0];
     if (min < supportedMin || max > supportedMax) {
       $("calculatorStatus").textContent = `${material.label} 的内置数据范围为 ${supportedMin}–${supportedMax} keV，请调整能量范围。`;
-      return;
+      $("downloadAttenuation").disabled = true;
+      return false;
     }
     const energies = rangeValues(min, max, step);
     const rows = energies.map((energy) => {
@@ -90,25 +151,40 @@
       const transmission = Math.exp(-linearMu * thickness / 10);
       return { energy, massMu, linearMu, transmission, intensity: incident * transmission };
     });
-    latest = { material, density, thickness, incident, rows, mode };
-    $("materialFormula").value = material.formula;
+    latest = { material, density, thickness, incident, min, max, step, rows, mode };
+    if (!material.custom) $("materialFormula").value = material.formula;
     $("materialDensity").value = density;
     $("resultMaterial").textContent = `${material.label} · ${density.toFixed(3)} g/cm³ · ${thickness.toFixed(3)} mm`;
     $("resultRange").textContent = `${min}–${max} keV`;
-    const sampleInput = $("sampleEnergy");
-    sampleInput.min = min;
-    sampleInput.max = max;
-    if (Number(sampleInput.value) < min || Number(sampleInput.value) > max) sampleInput.value = Math.min(max, Math.max(min, (min + max) / 2));
     updateSample();
     updatePenetration();
     drawChart();
     $("downloadAttenuation").disabled = false;
-    $("calculatorStatus").textContent = `已计算 ${rows.length} 个能量点，数据源：NIST XCOM 总衰减系数。`;
+    const sourceLabel = material.custom ? "自定义 μ/ρ 表格" : "NIST XCOM 总衰减系数";
+    $("calculatorStatus").textContent = `已计算 ${rows.length} 个能量点，数据源：${sourceLabel}。`;
+    return true;
+  }
+
+  function scheduleCalculate() {
+    window.clearTimeout(liveCalculateTimer);
+    liveCalculateTimer = window.setTimeout(() => {
+      liveCalculateTimer = null;
+      calculate();
+    }, 120);
+  }
+
+  function scheduleCustomLoad() {
+    window.clearTimeout(liveCalculateTimer);
+    liveCalculateTimer = window.setTimeout(() => {
+      liveCalculateTimer = null;
+      loadCustomMaterial();
+    }, 180);
   }
 
   function updateSample() {
     if (!latest) return;
-    const energy = Number($("sampleEnergy").value);
+    const energy = Number($("penetrationEnergy").value);
+    if (!Number.isFinite(energy) || energy <= 0) return;
     const massMu = interpLogLog(latest.material.points, energy);
     const linearMu = massMu * latest.density;
     const transmission = Math.exp(-linearMu * latest.thickness / 10);
@@ -128,7 +204,7 @@
   }
 
   function updatePenetration() {
-    const material = MATERIALS[$("knownMaterial").value];
+    const material = currentMaterial();
     const density = Number($("materialDensity").value);
     const energy = Number($("penetrationEnergy").value);
     const targetPercent = Number($("penetrationTarget").value);
@@ -181,12 +257,25 @@
     ctx.fillStyle = "#08090b";
     ctx.fillRect(0, 0, width, height);
     const rows = latest.rows;
-    const values = rows.map((row) => latest.mode === "transmission" ? row.transmission * 100 : latest.mode === "intensity" ? row.intensity : row.linearMu);
+    const values = rows.map((row) => plotValue(row, latest.mode));
     let yMin = Math.min(...values);
     let yMax = Math.max(...values);
-    if (yMin === yMax) { yMin = 0; yMax = yMax || 1; }
-    if (latest.mode === "transmission") yMin = Math.max(0, yMin - (yMax - yMin) * .08);
-    else { const margin = (yMax - yMin) * .1 || 1; yMin = Math.max(0, yMin - margin); yMax += margin; }
+    const span = yMax - yMin;
+    const margin = span * .1 || Math.max(yMax * .05, 1);
+    if (["transmission", "attenuationRate"].includes(latest.mode)) {
+      yMin = Math.max(0, yMin - margin);
+      yMax = Math.min(100, yMax + margin);
+    } else if (latest.mode === "intensity") {
+      yMin = Math.max(0, yMin - margin);
+      yMax = Math.min(latest.incident, yMax + margin);
+    } else {
+      yMin = Math.max(0, yMin - margin);
+      yMax += margin;
+    }
+    if (yMax <= yMin) {
+      yMin = 0;
+      yMax = latest.mode === "intensity" ? latest.incident : latest.mode === "attenuation" ? Math.max(values[0], 1) : 100;
+    }
     const x = (energy) => pad.left + (energy - rows[0].energy) / (rows[rows.length - 1].energy - rows[0].energy || 1) * (width - pad.left - pad.right);
     const y = (value) => height - pad.bottom - (value - yMin) / (yMax - yMin || 1) * (height - pad.top - pad.bottom);
     ctx.strokeStyle = "rgba(255,255,255,.1)";
@@ -203,18 +292,67 @@
     [rows[0].energy, rows[Math.floor(rows.length / 2)].energy, rows[rows.length - 1].energy].forEach((energy) => ctx.fillText(`${energy} keV`, x(energy), height - 21));
     ctx.save(); ctx.translate(compact ? 10 : 18, height / 2); ctx.rotate(-Math.PI / 2); ctx.fillStyle = "#a1a1a6"; ctx.fillText($("plotMode").selectedOptions[0].text, 0, 0); ctx.restore();
     ctx.strokeStyle = "#58a6c6"; ctx.lineWidth = 2.4; ctx.beginPath();
-    rows.forEach((row, index) => { const value = latest.mode === "transmission" ? row.transmission * 100 : latest.mode === "intensity" ? row.intensity : row.linearMu; if (index === 0) ctx.moveTo(x(row.energy), y(value)); else ctx.lineTo(x(row.energy), y(value)); });
+    rows.forEach((row, index) => { const value = plotValue(row, latest.mode); if (index === 0) ctx.moveTo(x(row.energy), y(value)); else ctx.lineTo(x(row.energy), y(value)); });
     ctx.stroke();
   }
 
   function downloadCsv() {
-    if (!latest) return;
-    const head = "energy_keV,mass_attenuation_cm2_g,linear_attenuation_cm1,transmission_percent,transmitted_intensity";
-    const body = latest.rows.map((row) => [row.energy, row.massMu, row.linearMu, row.transmission * 100, row.intensity].join(","));
-    const blob = new Blob([[head, ...body].join("\n")], { type: "text/csv;charset=utf-8" });
+    window.clearTimeout(liveCalculateTimer);
+    liveCalculateTimer = null;
+    if (!calculate() || !latest) return;
+    const head = "energy_keV,mass_attenuation_cm2_g,linear_attenuation_cm1,transmission_percent,attenuation_percent,transmitted_intensity";
+    const body = latest.rows.map((row) => [row.energy, row.massMu, row.linearMu, row.transmission * 100, (1 - row.transmission) * 100, row.intensity].join(","));
+    const metadata = [
+      `# material,${latest.material.label}`,
+      `# chemical_formula,${latest.material.formula}`,
+      `# density_g_cm3,${latest.density}`,
+      `# thickness_mm,${latest.thickness}`,
+      `# incident_intensity,${latest.incident}`,
+      `# energy_min_keV,${latest.min}`,
+      `# energy_max_keV,${latest.max}`,
+      `# energy_step_keV,${latest.step}`,
+      `# calculation_energy_keV,${Number($("penetrationEnergy").value)}`,
+      `# penetration_target_percent,${Number($("penetrationTarget").value)}`,
+      `# plot_mode,${latest.mode}`,
+    ];
+    const blob = new Blob([[...metadata, head, ...body].join("\n")], { type: "text/csv;charset=utf-8" });
     const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "xray-transmission.csv"; link.click(); URL.revokeObjectURL(link.href);
   }
 
+  function setMaterialSource() {
+    const custom = $("materialSource").value === "custom";
+    $("knownMaterialField").hidden = custom;
+    $("customMaterialPanel").hidden = !custom;
+    $("materialFormula").readOnly = !custom;
+    customMaterial = null;
+    if (custom) {
+      $("materialFormula").value = "Custom material";
+      $("customMaterialStatus").textContent = "粘贴数据或选择文件后，将自动载入并计算。";
+      $("calculatorStatus").textContent = "等待自定义材料数据。";
+      $("downloadAttenuation").disabled = true;
+    } else {
+      const material = MATERIALS[$("knownMaterial").value];
+      $("materialFormula").value = material.formula;
+      $("materialDensity").value = material.density;
+      calculate();
+    }
+  }
+
+  async function readCustomFile(event) {
+    const [file] = event.target.files;
+    if (!file) return;
+    try {
+      $("customMaterialTable").value = await file.text();
+      if ($("materialFormula").value === "Custom material") {
+        $("materialFormula").value = file.name.replace(/\.[^.]+$/, "");
+      }
+      loadCustomMaterial();
+    } catch {
+      $("customMaterialStatus").textContent = "无法读取该文件，请确认它是文本格式的 TXT/CSV。";
+    }
+  }
+
+  $("materialSource").addEventListener("change", setMaterialSource);
   $("knownMaterial").addEventListener("change", () => {
     const material = MATERIALS[$("knownMaterial").value];
     const minEnergy = material.points[0][0];
@@ -228,10 +366,27 @@
     calculate();
   });
   $("plotMode").addEventListener("change", calculate);
-  $("sampleEnergy").addEventListener("input", updateSample);
-  $("penetrationEnergy").addEventListener("input", updatePenetration);
+  $("energyStep").addEventListener("change", calculate);
+  ["materialDensity", "materialThickness", "incidentIntensity", "energyMin", "energyMax"].forEach((id) => {
+    $(id).addEventListener("input", scheduleCalculate);
+  });
+  $("penetrationEnergy").addEventListener("input", () => {
+    updatePenetration();
+    updateSample();
+  });
   $("penetrationTarget").addEventListener("input", updatePenetration);
-  $("materialDensity").addEventListener("input", updatePenetration);
+  $("customMaterialFile").addEventListener("change", readCustomFile);
+  $("customMaterialTable").addEventListener("input", scheduleCustomLoad);
+  $("customMaterialTable").addEventListener("change", loadCustomMaterial);
+  $("customEnergyUnit").addEventListener("change", loadCustomMaterial);
+  $("customMuColumn").addEventListener("change", loadCustomMaterial);
+  $("materialFormula").addEventListener("input", () => {
+    if ($("materialSource").value === "custom" && customMaterial) {
+      customMaterial.label = $("materialFormula").value.trim() || "Custom material";
+      customMaterial.formula = customMaterial.label;
+      scheduleCalculate();
+    }
+  });
   $("downloadAttenuation").addEventListener("click", downloadCsv);
   form.addEventListener("submit", (event) => { event.preventDefault(); calculate(); });
   window.addEventListener("resize", drawChart);
