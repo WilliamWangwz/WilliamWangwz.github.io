@@ -6,8 +6,8 @@
     <meta name="description" content="X 射线材料透射强度与透射率计算工具。" />
     <meta name="theme-color" content="#050506" />
     <title>X 射线透射计算 | Weizheng Wang</title>
-    <link rel="stylesheet" href="styles.css?v=20260908-2" />
-    <script defer src="attenuation.js?v=20260908-2"></script>
+    <link rel="stylesheet" href="styles.css?v=20260909-1" />
+    <script defer src="attenuation.js?v=20260909-1"></script>
   </head>
   <body class="calculator-page">
     <a class="skip-link" href="#main">跳到主要内容</a>
@@ -79,6 +79,10 @@
                 <span id="penetrationAnswerLabel">透射率降至 1% 时</span>
                 <strong id="penetrationThickness">—</strong>
                 <small id="penetrationDetails">输入有效参数后计算</small>
+                <div class="penetration-equivalents">
+                  <div><span>同阈值钢厚度</span><strong id="penetrationSteelThickness">—</strong><small>Fe 衰减系数，ρ = 7.85 g/cm³</small></div>
+                  <div><span>同阈值水厚度</span><strong id="penetrationWaterThickness">—</strong><small>液态水，ρ = 1.00 g/cm³</small></div>
+                </div>
               </div>
             </fieldset>
             <div class="calculator-actions"><button class="button button-light" type="submit" id="calculateAttenuation">计算</button><button class="button button-dark" type="button" id="downloadAttenuation" disabled>下载 CSV</button></div>
@@ -89,7 +93,12 @@
             <div class="transmission-chart-wrap"><canvas id="transmissionChart" width="1280" height="560" aria-label="X 射线透射计算曲线"></canvas><div class="chart-tooltip" id="chartTooltip" hidden></div></div>
             <div class="transmission-metrics"><div><span>质量衰减系数 μ/ρ</span><strong id="resultMassMu">—</strong><small>cm²/g</small></div><div><span>线性衰减系数 μ</span><strong id="resultLinearMu">—</strong><small>cm⁻¹</small></div><div><span>透射率 T</span><strong id="resultTransmission">—</strong><small id="resultEnergyLabel">at 80 keV</small></div><div><span>透射强度 I</span><strong id="resultIntensity">—</strong><small id="resultIncidentLabel">I₀ = 1.000e+6</small></div></div>
             <section class="equivalent-thickness" aria-labelledby="equivalent-title">
-              <div class="equivalent-heading"><div><span>Material equivalence</span><h2 id="equivalent-title">等效厚度</h2></div><p id="equivalentDescription">与 1.000 mm Al 在 80 keV 下产生相同透射率。</p></div>
+              <div class="equivalent-heading"><div><span>Material equivalence</span><h2 id="equivalent-title">当前厚度的材料等效</h2></div></div>
+              <div class="equivalent-reference">
+                <span>等效基准</span>
+                <strong id="equivalentReference">1.000 mm Al</strong>
+                <small id="equivalentDescription">在 80 keV 下产生相同透射率</small>
+              </div>
               <div class="equivalent-results">
                 <div><span>等效钢厚度</span><strong id="resultSteelEquivalent">—</strong><small>钢采用 Fe 衰减系数，ρ = 7.85 g/cm³</small></div>
                 <div><span>等效水厚度</span><strong id="resultWaterEquivalent">—</strong><small>液态水，ρ = 1.00 g/cm³</small></div>

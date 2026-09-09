@@ -200,7 +200,8 @@
     const waterMu = interpLogLog(EQUIVALENT_REFERENCES.water.points, energy) * EQUIVALENT_REFERENCES.water.density;
     $("resultSteelEquivalent").textContent = formatThicknessMm(opticalDepth / steelMu * 10);
     $("resultWaterEquivalent").textContent = formatThicknessMm(opticalDepth / waterMu * 10);
-    $("equivalentDescription").textContent = `与 ${latest.thickness.toFixed(3)} mm ${latest.material.label} 在 ${energy} keV 下产生相同透射率。`;
+    $("equivalentReference").textContent = `${latest.thickness.toFixed(3)} mm ${latest.material.label}`;
+    $("equivalentDescription").textContent = `在 ${energy} keV 下产生相同透射率 T = ${(row.transmission * 100).toFixed(4)}%`;
   }
 
   function updatePenetration() {
@@ -210,11 +211,15 @@
     const targetPercent = Number($("penetrationTarget").value);
     const output = $("penetrationThickness");
     const details = $("penetrationDetails");
+    const steelOutput = $("penetrationSteelThickness");
+    const waterOutput = $("penetrationWaterThickness");
     $("penetrationAnswerLabel").textContent = Number.isFinite(targetPercent)
-      ? `透射率降至 ${targetPercent}% 时`
+      ? `${material?.label || "当前材料"} 厚度（透射率降至 ${targetPercent}%）`
       : "指定透射率下";
     if (!material || ![density, energy, targetPercent].every(Number.isFinite) || density <= 0 || energy <= 0 || targetPercent <= 0 || targetPercent >= 100) {
       output.textContent = "—";
+      steelOutput.textContent = "—";
+      waterOutput.textContent = "—";
       details.textContent = "能量、密度须为正值，透射率须在 0–100% 之间";
       return;
     }
@@ -222,6 +227,8 @@
     const maxEnergy = material.points[material.points.length - 1][0];
     if (energy < minEnergy || energy > maxEnergy) {
       output.textContent = "超出数据范围";
+      steelOutput.textContent = "—";
+      waterOutput.textContent = "—";
       details.textContent = `${material.label} 支持 ${minEnergy}–${maxEnergy} keV`;
       return;
     }
@@ -230,11 +237,12 @@
     const thicknessCm = -Math.log(targetPercent / 100) / linearMu;
     const thicknessMm = thicknessCm * 10;
     const arealDensity = density * thicknessCm;
-    output.textContent = thicknessMm >= 1000
-      ? `${(thicknessMm / 1000).toFixed(4)} m`
-      : thicknessMm >= 10
-        ? `${thicknessMm.toFixed(3)} mm`
-        : `${thicknessMm.toFixed(4)} mm`;
+    const opticalDepth = -Math.log(targetPercent / 100);
+    const steelMu = interpLogLog(EQUIVALENT_REFERENCES.steel.points, energy) * EQUIVALENT_REFERENCES.steel.density;
+    const waterMu = interpLogLog(EQUIVALENT_REFERENCES.water.points, energy) * EQUIVALENT_REFERENCES.water.density;
+    output.textContent = formatThicknessMm(thicknessMm);
+    steelOutput.textContent = formatThicknessMm(opticalDepth / steelMu * 10);
+    waterOutput.textContent = formatThicknessMm(opticalDepth / waterMu * 10);
     details.textContent = `${thicknessCm.toFixed(4)} cm · 面密度 ${arealDensity.toFixed(4)} g/cm² · μ = ${linearMu.toFixed(4)} cm⁻¹`;
   }
 
