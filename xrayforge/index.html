@@ -1,60 +1,28 @@
 <!doctype html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="XRayForge 是面向科研与工程验证的 X 射线正投影和 CT 前向仿真平台。" />
-    <meta name="theme-color" content="#050506" />
-    <meta property="og:title" content="XRayForge | Physics in every projection" />
-    <meta property="og:description" content="从材料衰减数据到探测器响应，让每一步成像物理清晰、可控、可验证。" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="assets/xrayforge-ui-desktop.png" />
-    <title>XRayForge | X 射线正投影与 CT 仿真</title>
-    <link rel="stylesheet" href="assets/styles.css" />
-    <script defer src="assets/app.js"></script>
-  </head>
-  <body>
-    <a class="skip-link" href="#main">跳到主要内容</a>
-    <header class="site-header">
-      <a class="wordmark" href="#top" aria-label="XRayForge 首页">XRAYFORGE</a>
-      <nav class="nav-links" aria-label="主要导航"><a href="#physics">物理模型</a><a href="#workflow">工作流</a><a href="#interface">操作界面</a></nav>
-      <a class="nav-action" href="#access">了解更多</a>
-    </header>
-    <main id="main">
-      <section class="hero" id="top" aria-labelledby="hero-title">
-        <div class="hero-media" aria-hidden="true"></div><div class="hero-shade" aria-hidden="true"></div>
-        <div class="hero-copy"><p class="kicker">Physics-based · Python · Research platform</p><h1 id="hero-title">XRayForge</h1><p class="hero-line">每一次投影，都有物理依据。</p><p class="hero-description">透明、可扩展的 X 射线正投影与 CT 前向仿真平台。</p></div>
-        <div class="hero-actions"><a class="action action-primary" href="#physics">探索能力</a><a class="action action-glass" href="#interface">查看界面</a></div>
-        <a class="scroll-cue" href="#physics" aria-label="继续浏览"><span></span></a>
-      </section>
-      <section class="section statement" id="physics" aria-labelledby="physics-title">
-        <div class="section-copy"><p class="kicker">Physics first</p><h2 id="physics-title">不是黑箱。<br />每一步都可以解释。</h2><p class="lead">从质量衰减系数、能谱和几何路径，到探测器响应与噪声，XRayForge 保留完整计算链路，适合科研验证、课程教学和定制开发。</p></div>
-        <div class="equation" aria-label="多能谱投影公式"><span>I = Σ<sub>E</sub> R(E) I₀(E)</span><span>exp[−Σ<sub>m</sub> μ<sub>m</sub>(E)L<sub>m</sub>]</span></div>
-        <div class="metrics" aria-label="核心特点"><div><strong>NumPy</strong><span>清晰的计算核心</span></div><div><strong>CPU / GPU</strong><span>可扩展计算后端</span></div><div><strong>Traceable</strong><span>可追溯物理链路</span></div></div>
-      </section>
-      <section class="section workflow" id="workflow" aria-labelledby="workflow-title">
-        <div class="workflow-visual" aria-hidden="true"></div><div class="workflow-heading"><p class="kicker">One continuous pipeline</p><h2 id="workflow-title">从材料数据，<br />到最终图像。</h2></div>
-        <ol class="pipeline"><li><span>01</span><strong>NIST XCOM</strong><small>材料衰减数据</small></li><li><span>02</span><strong>Spectrum</strong><small>单能 / 多能谱</small></li><li><span>03</span><strong>Geometry</strong><small>Voxel / STL</small></li><li><span>04</span><strong>Projection</strong><small>Parallel / Cone Beam</small></li><li><span>05</span><strong>Detector</strong><small>Response / Noise</small></li></ol>
-      </section>
-      <section class="section results" aria-labelledby="results-title">
-        <div class="results-heading"><p class="kicker">Controlled results</p><h2 id="results-title">生成你需要的投影。</h2><p class="lead">支持单材料、多材料 radiograph 与多角度 CT forward projection stack，并输出 CSV、PGM 或 TIFF。</p></div>
-        <div class="result-visuals"><figure><img src="assets/single-material-projection.png" alt="XRayForge 单材料投影结果" /><figcaption><span>Single material</span><b>Beer–Lambert</b></figcaption></figure><figure><img src="assets/polychromatic-projection.png" alt="XRayForge 多能谱投影结果" /><figcaption><span>Polychromatic</span><b>Beam hardening</b></figcaption></figure></div>
-        <ul class="result-features"><li>Poisson / Gaussian 噪声</li><li>环形伪影模拟</li><li>平场 / 暗场校正</li><li>16-bit 科研图像</li></ul>
-      </section>
-      <section class="interface" id="interface" aria-labelledby="interface-title">
-        <div class="interface-media" aria-hidden="true"></div><div class="interface-shade" aria-hidden="true"></div>
-        <div class="interface-copy"><p class="kicker">Built-in interface</p><h2 id="interface-title">无需先写脚本。<br />浏览器里直接实验。</h2><p>配置材料、能谱、phantom、成像几何和噪声，实时检查视场并生成投影。</p></div>
-        <div class="interface-note"><span class="status-dot"></span><span>Local research workspace</span></div>
-      </section>
-      <section class="section capability-list" aria-labelledby="capability-title">
-        <div class="capability-intro"><p class="kicker">Built to extend</p><h2 id="capability-title">研究级能力，<br />保持清晰。</h2></div>
-        <div class="capabilities"><article><span>01</span><h3>材料与能谱</h3><p>NIST XCOM 数据导入、能量插值、单能与多能谱建模。</p></article><article><span>02</span><h3>成像几何</h3><p>平行束、锥束、SOD/SDD、探测器尺寸与视场计算。</p></article><article><span>03</span><h3>STL 与体素</h3><p>体素 phantom、STL 体素化、多材料路径长度与 mesh 接口。</p></article><article><span>04</span><h3>计算后端</h3><p>先用 CPU 验证完整流程，再按研究规模接入 GPU 加速。</p></article></div>
-      </section>
-      <section class="access" id="access" aria-labelledby="access-title">
-        <div><p class="kicker">Private research software</p><h2 id="access-title">为成像研究，<br />打造可信的基础。</h2><p>XRayForge 目前采用私有分发。研究合作、功能演示或使用咨询，请联系开发者。</p></div>
-        <div class="access-actions"><a class="action action-primary" href="https://www.wzwang.top/">访问个人主页</a><a class="action action-outline" href="https://github.com/WilliamWangwz" target="_blank" rel="noreferrer">联系开发者</a></div>
-      </section>
-    </main>
-    <footer class="site-footer"><a class="wordmark" href="#top">XRAYFORGE</a><p>Physics-based X-ray simulation.</p><nav aria-label="页脚导航"><a href="#physics">能力</a><a href="#interface">界面</a><a href="https://www.wzwang.top/">wzwang.top</a></nav><span>© <span data-year></span> XRayForge</span></footer>
-  </body>
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>X-Ray Forge · X 射线成像与 CT 前向仿真</title>
+  <meta name="description" content="X-Ray Forge：面向成像研究的 Windows 桌面软件。多材料 STL、能谱与探测器响应、GPU 正投影、CT 投影序列、焦斑及准直研究。查看真实像质计与模拟结果，通过邮件申请安装包及授权。">
+  <meta name="theme-color" content="#090c11"><meta property="og:title" content="X-Ray Forge · 让成像研究，从可控的模拟开始。">
+  <meta property="og:description" content="像质计、复杂模型与多材料电池的真实仿真示例。物理参数可配置，研究结果可追溯。">
+  <meta property="og:type" content="website"><meta property="og:image" content="assets/dragon-point.webp">
+  <link rel="stylesheet" href="assets/promotion.css?v=20261011"><script defer src="assets/promotion.js?v=20261011"></script>
+</head>
+<body>
+  <a class="skip" href="#main">跳到内容</a>
+  <header class="topbar"><div class="wrap nav"><a href="../" class="brand">X-RAY <span>FORGE</span></a><nav class="navlinks" aria-label="项目导航"><a href="#results">模拟结果</a><a href="#research">研究能力</a><a href="../">个人主页 ↗</a></nav><a class="nav-cta" href="#access">申请使用</a></div></header>
+  <main id="main">
+    <section class="hero"><div class="wrap"><div class="hero-grid"><div><p class="eyebrow">Scientific software / X-ray imaging</p><h1>X-Ray Forge<span>让成像研究，<br>从可控的模拟开始。</span></h1><p class="lead">从材料与能谱，到几何、焦斑与探测器。用清晰的物理链路，模拟 X 射线投影，研究 CT 采集与图像质量。</p><div class="actions"><a class="button primary" href="#results">查看模拟结果 <span aria-hidden="true">&nbsp;↘</span></a><a class="button" href="#access">申请安装包与授权</a></div><div class="signal-tags"><span>Windows 桌面工作台</span><span>GPU 射线追踪</span><span>科研 / 工程验证</span></div></div><figure class="hero-visual"><img src="assets/dragon-point.webp" width="512" height="512" alt="X-Ray Forge 生成的复杂 STL 龙模型 X 射线线积分投影" fetchpriority="high"><div class="scan-grid" aria-hidden="true"></div><div class="visual-label"><span>STL / LINE INTEGRAL</span><span>SIMULATION OUTPUT</span></div><figcaption class="visual-caption">复杂几何 · 点源投影示例 · SOD 200 / SDD 800 mm</figcaption></figure></div><div class="hero-strip"><span><strong>Radiograph</strong>单视图与多视图投影</span><span><strong>CT Forward</strong>多角度采集序列</span><span><strong>Focal Spot Lab</strong>焦斑、Profile 与 MTF 研究</span></div></div></section>
+    <section class="section" id="results"><div class="wrap"><div class="section-heading"><div><p class="eyebrow">Computed, not illustrated</p><h2>真实计算结果，<br>看得见的成像差异。</h2></div><p>以下图像来自现有 X-Ray Forge 仿真输出，仅做灰度窗宽与网页尺寸处理。像质计用于观察细节响应，工程模型用于检查投影与几何。</p></div><div class="gallery">
+      <figure class="image-card iqi"><div class="media"><div><p class="subcaption">01 / POINT-SOURCE REFERENCE</p><img src="assets/iqi-point.webp" width="717" height="240" alt="铁板七孔像质计的点源参考投影，从小孔到大孔依次排列" loading="lazy"></div><div><p class="subcaption">02 / MEASURED FOCAL-SPOT INPUT</p><img src="assets/iqi-measured.webp" width="717" height="240" alt="同一七孔像质计使用实测焦斑输入后的投影，边缘响应出现模糊" loading="lazy"></div></div><figcaption><p class="tag">IMAGE QUALITY INDICATOR</p><h3>从像质计，观察焦斑对细节的影响。</h3><p>3 mm 铁板 · 七个贯通圆孔 · 孔径 0.8–3.2 mm。对照点源与实测 TIFF 焦斑输入，观察小孔对比度和边缘响应。</p></figcaption></figure>
+      <figure class="image-card"><div class="media"><img src="assets/ct-projection.webp" width="700" height="700" alt="复杂参考模体的 CT 采集投影，显示框架与内部结构" loading="lazy"></div><figcaption><p class="tag">CT ACQUISITION</p><h3>复杂模体的投影序列。</h3><p>结合扫描轨迹与探测器几何，输出 CT 前向投影，用于后续重构流程和采集参数研究。</p></figcaption></figure>
+      <figure class="image-card battery"><div class="media"><img src="assets/battery-projection.webp" width="319" height="1100" alt="理想化 18650 多材料电池的 X 射线仿真投影，显示壳体和卷绕结构" loading="lazy"></div><figcaption><p class="tag">MULTI-MATERIAL / 18650</p><h3>让内部结构进入计算。</h3><p>理想化多材料电池模型的仿真投影。材料、壳体和内部几何共同影响衰减与图像响应。</p></figcaption></figure>
+    </div><p class="image-note">图像是仿真示例，不是实验扫描或产品检测结论。显示窗宽按示例单独设置；像质计与焦斑对照用于定性展示，具体研究以原始数据和配置为准。</p></div></section>
+    <section class="section comparison-section"><div class="wrap"><div class="section-heading"><div><p class="eyebrow">Explore the focal spot</p><h2>相同几何，<br>不同焦斑。</h2></div><p>移动滑块，比较同一 STL 模型的点源参考与矩形焦斑投影。几何放大与有限焦斑共同影响轮廓和细节。</p></div><div class="slider-frame"><img src="assets/dragon-focus.webp" width="512" height="512" alt="3.0 × 0.3 mm 矩形焦斑的龙模型模拟投影" loading="lazy"><div class="overlay"><img src="assets/dragon-point.webp" width="512" height="512" alt="点源参考的龙模型投影，与矩形焦斑图像重叠比较" loading="lazy"></div><div class="slider-divider" aria-hidden="true"></div></div><div class="slider-labels"><span>点源参考</span><span>矩形焦斑 3.0 × 0.3 mm</span></div><div class="compare-controls"><label for="focus-comparison">比较位置</label><input type="range" id="focus-comparison" min="0" max="100" value="50" aria-label="点源与矩形焦斑对照分界位置"><output id="comparison-position" for="focus-comparison">50%</output></div><p class="image-note">SOD 200 / SDD 800 mm；矩形焦斑使用 19 个有效 sourcelet。两图使用同一线积分显示窗，不改变原始模拟数据。</p></div></section>
+    <section class="section" id="research"><div class="wrap"><div class="section-heading"><div><p class="eyebrow">One research workspace</p><h2>把成像参数，<br>变成可以研究的变量。</h2></div><p>从基础正投影到 Pro 焦斑研究，在同一桌面工作台中配置、预览、计算与导出。</p></div><div class="features"><article class="feature"><span>01 / MATERIALS & SPECTRUM</span><h3>材料与多能谱</h3><p>导入 NIST XCOM 衰减表，配置材料密度和入射能谱。按材料与厚度计算滤波后的光谱，并应用到配置。</p></article><article class="feature"><span>02 / GEOMETRY & GPU</span><h3>多材料 STL 与 GPU 投影</h3><p>配置 SOD、SDD、探测器和物体姿态；基于有限射线路径与能谱吸收计算单视图、多视图及 CT 前向投影。</p></article><article class="feature"><span>03 / DETECTOR</span><h3>探测器与图像质量</h3><p>配置探测器像素、响应及噪声，生成平场和暗场数据，配合校正与像质计观察图像变化。</p></article><article class="feature"><span>04 / FOCAL SPOT LAB · PRO</span><h3>实测焦斑研究</h3><p>导入 TIFF 焦斑，调整尺寸、旋转、平移与翻转，分析 H/V Profile、FWHM、5% 宽度和源平面 MTF。</p></article><article class="feature"><span>05 / COLLIMATION · PRO</span><h3>准直与等效源</h3><p>配置准直管几何和铅、钢、钨材料，计算出口透射及等效源焦斑，将研究结果应用到仿真配置。</p></article><article class="feature"><span>06 / REPRODUCIBLE WORKFLOW</span><h3>配置与研究输出</h3><p>保留配置、图像与分析结果，支持源模型对照。用于成像参数探索、工程验证和研究流程开发。</p></article></div><ol class="workflow" aria-label="计算流程"><li><span>01</span>材料 / 光谱<small>设置物理输入</small></li><li><span>02</span>模型 / 几何<small>检查扫描与视场</small></li><li><span>03</span>焦斑 / 探测器<small>选择成像响应</small></li><li><span>04</span>GPU 计算<small>投影与角度序列</small></li><li><span>05</span>导出 / 对照<small>分析与后续重构</small></li></ol><div class="equation" aria-label="多材料多能谱吸收模型">I = Σ<sub>E</sub> R(E) · I₀(E) · exp[−Σ<sub>m</sub> μ<sub>m</sub>(E) L<sub>m</sub>]</div><p class="image-note">展示内容为前向成像与源模型研究。准直分析采用射线吸收模型，不含散射与二次粒子；CT 重构可结合独立后续流程。</p></div></section>
+    <section class="access" id="access"><div class="wrap access-grid"><div><p class="eyebrow">Research collaboration / Software access</p><h2>用你的研究问题，<br>开始一次模拟。</h2><p>安装包采用邮件申请。说明使用用途和所需版本，即可联系作者获取软件与授权；基础版用于基础仿真，Pro 包含基础版及研究插件。</p></div><div><a class="email" href="mailto:weizhengwang78@gmail.com">weizhengwang78@gmail.com</a><div class="actions"><a class="button primary" href="mailto:weizhengwang78@gmail.com?subject=X-Ray%20Forge%20%E5%AE%89%E8%A3%85%E5%8C%85%E4%B8%8E%E6%8E%88%E6%9D%83%E7%94%B3%E8%AF%B7">写邮件申请 ↗</a><a class="button" href="https://license.wzwang.top/xrayforge/?lang=zh#license">版本说明与授权</a></div><p class="access-note">Windows x64 · GPU 需要兼容的 NVIDIA 驱动<br>无法联网时，可向作者申请绑定主机的 7 天离线试用。</p></div></div></section>
+  </main>
+  <footer><div class="wrap"><span>© <span data-year>2026</span> Weizheng Wang · X-Ray Forge</span><a href="../">个人主页 ↗</a><span>Physics-based imaging. Research-driven software.</span></div></footer>
+</body>
 </html>

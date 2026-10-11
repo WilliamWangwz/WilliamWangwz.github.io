@@ -10,12 +10,13 @@
     <meta property="og:type" content="website" />
     <title>Weizheng Wang | Materials Dynamics & X-ray Imaging</title>
     <link rel="stylesheet" href="styles.css?v=attenuation-1" />
+    <link rel="stylesheet" href="xrayforge-home.css?v=20261011" />
   </head>
   <body>
     <a class="skip-link" href="#main">跳到主要内容</a>
     <header class="site-header">
       <a class="wordmark" href="#top">WEIZHENG WANG</a>
-      <nav aria-label="主要导航"><a href="#research">研究</a><a href="attenuation.html">透射计算</a><a href="resolution.html">分辨率计算</a><a href="#teaching">教学</a><a href="#publications">论文</a><a href="#projects">项目</a></nav>
+      <nav aria-label="主要导航"><a href="#research">研究</a><a href="#projects">X-Ray Forge</a><a href="attenuation.html">透射计算</a><a href="resolution.html">分辨率计算</a><a href="#teaching">教学</a><a href="#publications">论文</a></nav>
       <a class="nav-orcid" href="https://orcid.org/0009-0001-5623-5971" target="_blank" rel="me noreferrer">ORCID</a>
     </header>
 
@@ -46,6 +47,12 @@
           <article><span>03</span><div><h3>同步辐射 X 射线成像</h3><p>利用原位衍射和三维层析成像，捕捉材料内部变形、缺陷与断裂过程。</p></div></article>
           <article><span>04</span><div><h3>科学计算与软件</h3><p>将成像物理、数据处理与可复现实验流程转化为清晰可靠的软件工具。</p></div></article>
         </div>
+      </section>
+
+      <section class="forge-promo" id="projects" aria-labelledby="forge-title">
+        <div class="forge-promo-heading"><p class="eyebrow">Scientific software · Developed by Weizheng Wang</p><a href="xrayforge/">进入软件项目页 ↗</a></div>
+        <div class="forge-promo-grid"><div><h2 id="forge-title">X-Ray Forge</h2><h3>让成像研究，<br>从可控的模拟开始。</h3><p>面向科研与工程验证的 X 射线成像与 CT 前向仿真桌面软件。从多材料 STL、能谱与探测器，到实测焦斑和准直，把每一步成像参数变成可以研究的变量。</p><div class="forge-promo-tags"><span>GPU 正投影</span><span>CT 采集序列</span><span>焦斑与像质研究</span></div><div class="forge-promo-actions"><a class="button button-light" href="xrayforge/">查看软件与模拟结果 ↗</a><a class="button button-dark" href="https://license.wzwang.top/xrayforge/?lang=zh#license">申请安装包与授权</a></div></div><figure class="forge-promo-media"><img src="xrayforge/assets/dragon-point.webp" width="512" height="512" alt="X-Ray Forge 复杂 STL 模型的真实 X 射线仿真投影" loading="lazy"><span>STL · X-RAY FORWARD SIMULATION</span><figcaption>真实仿真输出 · 复杂几何的线积分投影</figcaption></figure></div>
+        <figure class="forge-promo-iqi"><img src="xrayforge/assets/iqi-point.webp" width="717" height="240" alt="七孔铁板像质计的点源模拟投影" loading="lazy"><figcaption><strong>从像质计到复杂模型。</strong>用参考投影与焦斑对照，观察孔径、边缘响应及图像细节；用多材料模型探索工程成像参数。<span>孔板像质计 · 0.8–3.2 mm · 仿真示例，非实验扫描</span></figcaption></figure>
       </section>
 
       <section class="teaching section" id="teaching" aria-labelledby="teaching-title">
@@ -86,13 +93,6 @@
         <a class="orcid-link" href="https://orcid.org/0009-0001-5623-5971" target="_blank" rel="me noreferrer"><span>ORCID</span><strong>0009-0001-5623-5971</strong><b>↗</b></a>
       </section>
 
-      <section class="projects section" id="projects" aria-labelledby="projects-title">
-        <div class="section-intro"><p class="eyebrow">Selected project</p><h2 id="projects-title">研究工具。</h2></div>
-        <a class="project-feature" href="xrayforge/">
-          <div class="project-media"><img src="xrayforge-ui.png" alt="XRayForge X 射线仿真界面" /></div>
-          <div class="project-copy"><p class="eyebrow">Scientific software</p><h3>XRayForge</h3><p>面向科研与工程验证的 X 射线正投影和 CT 前向仿真平台。让材料、能谱、几何和探测器响应的完整物理链路清晰可见。</p><span>进入项目页 ↗</span></div>
-        </a>
-      </section>
     </main>
 
     <footer><a class="wordmark" href="#top">WEIZHENG WANG</a><p>Materials dynamics, X-ray imaging and scientific software.</p><nav><a href="https://orcid.org/0009-0001-5623-5971" target="_blank" rel="me noreferrer">ORCID</a><a href="https://github.com/WilliamWangwz" target="_blank" rel="noreferrer">GitHub</a><a href="attenuation.html">透射计算</a><a href="resolution.html">分辨率计算</a><a href="teaching/">教学</a><a href="xrayforge/">XRayForge</a></nav><span>© 2026 Weizheng Wang</span></footer>
